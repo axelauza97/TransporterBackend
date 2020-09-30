@@ -1,5 +1,9 @@
 from django.db import models
-from django.contrib.auth.models import User
+from django.contrib.auth.models import AbstractUser
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.conf import settings
 
 # Create your models here.
 
@@ -17,6 +21,57 @@ class Company(models.Model):
     def __str__(self):
         return '%s: %s %s %s %s' % (self.idCompany, self.nameCompany, self.typeCompany, self.addressCompany, self.webpageCompany)
 
+class User(AbstractUser):
+    company = models.ManyToManyField(Company, blank=True)
+    class Meta:
+        db_table = 'user'
+        managed = True
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
+class Chat(models.Model):
+    type = models.CharField(max_length=200)
+    userID1 = models.ManyToManyField(User, related_name="userID1", blank=True)
+    userID2 = models.ManyToManyField(User, related_name="userID2",blank=True)
+    date = models.DateField()
+    class Meta:
+        db_table = 'chat'
+        managed = True
+
+class UserChat(models.Model):
+    user = models.ManyToManyField(User, blank=True)
+    chat = models.ManyToManyField(Chat, blank=True)
+    date = models.DateField()
+    class Meta:
+        db_table = 'userchat'
+        managed = True
+
+class Message(models.Model):
+    user = models.ManyToManyField(User, blank=True)
+    chat = models.ManyToManyField(Chat, blank=True)
+    sendDate = models.DateField()
+    content = models.CharField(max_length=200)
+    class Meta:
+        db_table = 'message'
+        managed = True
+
+class Employee(models.Model):
+    user = models.ManyToManyField(User, blank=True)
+    class Meta:
+        db_table = 'employee'
+        managed = True
+
+class Suggestion(models.Model):
+    email = models.CharField(max_length=255)
+    comment = models.CharField(max_length=255)
+    atendido = models.BooleanField()
+    class Meta:
+        db_table = 'suggestion'
+        managed = True
+   
 class Vehicle(models.Model):
     idVehicle = models.AutoField(primary_key=True)
     brandVehicle = models.CharField(max_length=45, blank=True, null=True)
@@ -137,4 +192,27 @@ class Service(models.Model):
     def __str__(self):
        return '%s: %s %s %s' % (self.idService, self.endidLocation, self.startDate, self.endDate)
 
+
+class Details(models.Model):
+    service = models.ManyToManyField(Service)
+    user = models.ManyToManyField(User)
+    description = models.CharField(max_length=25)
+    class Meta:
+        db_table = 'details'
+        managed = True
+
+
+class Police(models.Model):
+    idPolice = models.AutoField(primary_key=True)
+    policeTitle = models.CharField(max_length=20, blank=True, null=True)
+    policeDescription = models.CharField(max_length=200, blank=True, null=True)
+    policeDate = models.DateTimeField(blank=True, null=True)
+    policeState = models.IntegerField(blank=True, null=True)
+
+    class Meta:
+        db_table = 'police'
+        managed = True
+
+    def __str__(self):
+       return '%s: %s %s %s %s' % (self.idPolice, self.policeTitle, self.policeDescription, self.policeDate, self.policeState)
 

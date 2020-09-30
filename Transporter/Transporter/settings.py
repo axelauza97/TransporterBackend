@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's)%xi3rob-o7!(rjtq1vc4t8&_a94!ca5+jo&xr^ggu7b5nw73'
+SECRET_KEY = ''
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,17 +40,14 @@ INSTALLED_APPS = [
     'appVehicular',
     'rest_framework',
     'rest_framework.authtoken',
-    'oauth2_provider',
-    'social_django',
-    'rest_framework_social_oauth2',
+#    'oauth2_provider',
+#    'social_django',
+#    'rest_framework_social_oauth2',
     'corsheaders',
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': [
-        'rest_framework.authentication.TokenAuthentication',
-    ],
-}
+AUTH_USER_MODEL = 'appVehicular.User'
+
 #capa encima de backend de conexión , recursos disponibles externos
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -96,11 +93,9 @@ DATABASES = {
         'NAME': 'CTVehicular$DBCTVehicular',
         'USER': 'CTVehicular',
         'PASSWORD': 'idsCT2020',
-        'HOST': 'CTVehicular.mysql.pythonanywhere-services.com',
-        'default-character-set' : 'utf8',
-        'OPTIONS': {
-            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
-        },
+        'HOST': 'localhost',
+        'PORT': '3306',
+
     }
 
 }
@@ -153,14 +148,16 @@ STATIC_URL = '/static/'
 CORS_ALLOW_ALL_ORIGINS = True  # permite que cualquier domini entre; en produccion usar whitelist
 
 REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': (
+        'rest_framework.permissions.IsAuthenticated',
+    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.SessionAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
         # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
-        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+       'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
 }
-
 AUTHENTICATION_BACKENDS = (
     #Agregar Facebook
 

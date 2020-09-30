@@ -1,6 +1,5 @@
 from .models import *
 from rest_framework import serializers
-from django.contrib.auth.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
@@ -50,4 +49,9 @@ class LocationSerializer(serializers.ModelSerializer):
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
+        fields = '__all__'
+
+class PoliceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Police
         fields = '__all__'
