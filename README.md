@@ -12,3 +12,15 @@ Nombre Proyecto
 Transporter
  |_ appVehicular
 
+Details:
+  MySql
+    drop database ctvehicular$dbctvehicular;
+    create database ctvehicular$dbctvehicular;
+    use ctvehicular$dbctvehicular;
+    create user CTVehicular identified by "idsCT2020";
+    grant all on ctvehicular$dbctvehicular.* to CTVehicular;
+    flush privileges;
+  Steps
+    python manage.py makemigrations
+    python manage.py migrate --run-syncdb
+    python manage.py migrate
