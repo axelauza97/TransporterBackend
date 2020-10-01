@@ -12,5 +12,4 @@ admin.site.register(Fare)
 admin.site.register(Payment)
 admin.site.register(Location)
 admin.site.register(Service)
-admin.site.register(Police)
 

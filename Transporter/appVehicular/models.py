@@ -33,7 +33,7 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
         Token.objects.create(user=instance)
 
 class Chat(models.Model):
-    type = models.CharField(max_length=200)
+    typee = models.CharField(max_length=200)
     userID1 = models.ManyToManyField(User, related_name="userID1", blank=True)
     userID2 = models.ManyToManyField(User, related_name="userID2",blank=True)
     date = models.DateField()
@@ -200,19 +200,4 @@ class Details(models.Model):
     class Meta:
         db_table = 'details'
         managed = True
-
-
-class Police(models.Model):
-    idPolice = models.AutoField(primary_key=True)
-    policeTitle = models.CharField(max_length=20, blank=True, null=True)
-    policeDescription = models.CharField(max_length=200, blank=True, null=True)
-    policeDate = models.DateTimeField(blank=True, null=True)
-    policeState = models.IntegerField(blank=True, null=True)
-
-    class Meta:
-        db_table = 'police'
-        managed = True
-
-    def __str__(self):
-       return '%s: %s %s %s %s' % (self.idPolice, self.policeTitle, self.policeDescription, self.policeDate, self.policeState)
 

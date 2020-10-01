@@ -25,13 +25,13 @@ class CustomAuthToken(ObtainAuthToken):
         return Response({
             'token': token.key,
             'isAdmin': user.is_superuser,
-            'date': created,
         })
 
 class UserViewset(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated,]
+    
 
 # Create your views here.
 #get, post

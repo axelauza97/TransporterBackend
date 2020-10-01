@@ -25,7 +25,4 @@ urlpatterns = [
 
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
-
-    url(r'^police/$',PoliceList.as_view(), name ='police'),
-    url(r'^police/(?P<pk>[0-9]+)/$', PoliceDetail.as_view()),
 ]
