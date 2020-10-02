@@ -4,6 +4,12 @@ from .models import *
 
 
 admin.site.register(Company)
+admin.site.register(User)
+admin.site.register(Chat)
+admin.site.register(UserChat)
+admin.site.register(Message)
+admin.site.register(Employee)
+admin.site.register(Suggestion)
 admin.site.register(Vehicle)
 admin.site.register(Driver)
 admin.site.register(Client)
@@ -12,4 +18,4 @@ admin.site.register(Fare)
 admin.site.register(Payment)
 admin.site.register(Location)
 admin.site.register(Service)
-
+admin.site.register(Details)
