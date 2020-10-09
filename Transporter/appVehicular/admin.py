@@ -6,7 +6,6 @@ from .models import *
 admin.site.register(Company)
 admin.site.register(User)
 admin.site.register(Chat)
-admin.site.register(UserChat)
 admin.site.register(Message)
 admin.site.register(Employee)
 admin.site.register(Suggestion)

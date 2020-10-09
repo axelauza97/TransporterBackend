@@ -46,6 +46,8 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+AUTH_USER_MODEL = 'appVehicular.User'
+
 #capa encima de backend de conexión , recursos disponibles externos
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -56,7 +58,6 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'social_django.middleware.SocialAuthExceptionMiddleware',
 ]
 
@@ -153,6 +154,8 @@ STATIC_URL = '/static/'
 #STATIC_URL = '/static/'
 CORS_ALLOW_ALL_ORIGINS = True  # permite que cualquier domini entre; en produccion usar whitelist
 
+
+
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -160,8 +163,9 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
-        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+       
+        #'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        #'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
 }
 
@@ -172,17 +176,17 @@ AUTHENTICATION_BACKENDS = (
 
     # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
+    'social_core.backends.google.GoogleOAuth',
 
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
+    #'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',    
 )
 
-
-AUTH_USER_MODEL = 'appVehicular.User'
+SOCIAL_AUTH_URL_NAMESPACE = 'social'
+#LOGIN_REDIRECT_URL='/'
+#LOGOUT_REDIRECT_URL='/'
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
 
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
@@ -192,8 +196,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 # Facebook configuration
-SOCIAL_AUTH_FACEBOOK_KEY = ''
-SOCIAL_AUTH_FACEBOOK_SECRET = ''
 SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.

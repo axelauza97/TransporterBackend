@@ -20,6 +20,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     #path('api', include('appVehicular.urls')),
     path('api/', include('appVehicular.urls')),
+    path('social-auth/', include('social_django.urls', namespace='social'))
     #path(r'api-auth/', include('rest_framework.urls')),
     #url(r'^api-token-auth/', views.obtain_auth_token),
     #url(r'^', include(router.urls)),

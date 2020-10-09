@@ -2,9 +2,32 @@ from .models import *
 from rest_framework import serializers
 
 class UserSerializer(serializers.ModelSerializer):
+    password = serializers.CharField(write_only=True)
+    
+    def create(self, validated_data):
+        usuario = Usuario.objects.create(
+            cod_usuario= validated_data['cod_usuario'],
+            username=validated_data['username'],
+            email = validated_data['email'],
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
+        )
+        usuario.set_password(validated_data['password'])
+        usuario.save()
+
+        return usuario
     class Meta:
+        fields = (
+            'cod_usuario',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'password',
+            'is_active',
+         
+        )
         model = User
-        fields = '__all__'
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:

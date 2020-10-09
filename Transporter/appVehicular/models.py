@@ -14,19 +14,12 @@ class Company(models.Model):
     addressCompany = models.CharField(max_length=45, blank=True, null=True)
     webpageCompany = models.CharField(max_length=45, blank=True, null=True)
 
-    class Meta:
-        db_table = 'company'
-        managed = True
-
     def __str__(self):
         return '%s: %s %s %s %s' % (self.idCompany, self.nameCompany, self.typeCompany, self.addressCompany, self.webpageCompany)
 
 class User(AbstractUser):
-    company = models.ManyToManyField(Company, blank=True)
-    class Meta:
-        db_table = 'user'
-        managed = True
-
+    company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
+    
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
@@ -34,44 +27,24 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 
 class Chat(models.Model):
     typee = models.CharField(max_length=200)
-    userID1 = models.ManyToManyField(User, related_name="userID1", blank=True)
-    userID2 = models.ManyToManyField(User, related_name="userID2",blank=True)
+    userID1 = models.ForeignKey(User, related_name="userID1", blank=True, on_delete=models.CASCADE)
+    userID2 = models.ForeignKey(User, related_name="userID2",blank=True, on_delete=models.CASCADE)
     date = models.DateField()
-    class Meta:
-        db_table = 'chat'
-        managed = True
-
-class UserChat(models.Model):
-    user = models.ManyToManyField(User, blank=True)
-    chat = models.ManyToManyField(Chat, blank=True)
-    date = models.DateField()
-    class Meta:
-        db_table = 'userchat'
-        managed = True
-
+    
 class Message(models.Model):
-    user = models.ManyToManyField(User, blank=True)
-    chat = models.ManyToManyField(Chat, blank=True)
+    user = models.ForeignKey(User, blank=True, on_delete=models.CASCADE)
+    chat = models.ForeignKey(Chat, blank=True, on_delete=models.CASCADE)
     sendDate = models.DateField()
     content = models.CharField(max_length=200)
-    class Meta:
-        db_table = 'message'
-        managed = True
-
+    
 class Employee(models.Model):
     user = models.ManyToManyField(User, blank=True)
-    class Meta:
-        db_table = 'employee'
-        managed = True
-
+    
 class Suggestion(models.Model):
     email = models.CharField(max_length=255)
     comment = models.CharField(max_length=255)
     atendido = models.BooleanField()
-    class Meta:
-        db_table = 'suggestion'
-        managed = True
-   
+    
 class Vehicle(models.Model):
     idVehicle = models.AutoField(primary_key=True)
     brandVehicle = models.CharField(max_length=45, blank=True, null=True)
@@ -79,10 +52,7 @@ class Vehicle(models.Model):
     modelVehicle = models.CharField(max_length=45, blank=True, null=True)
     colorVehicle = models.CharField(max_length=45, blank=True, null=True)
 
-    class Meta:
-        db_table = 'vehicle'
-        managed = True
-
+    
     def __str__(self):
         return '%s: %s %s %s %s' % (self.idVehicle, self.brandVehicle, self.typeVehicle, self.modelVehicle, self.colorVehicle)
 
@@ -93,10 +63,7 @@ class Driver(models.Model):
     rateDriver = models.IntegerField(blank=True, null=True)
     vehicleDriver = models.ForeignKey(Vehicle, models.DO_NOTHING, db_column='idVehicle')
 
-    class Meta:
-        db_table = 'drive'
-        managed = True
-
+    
     def __str__(self):
        return '%s: %s %s %s' % (self.idDriver, self.userDriver, self.rateDriver, self.vehicleDriver)
 
@@ -105,10 +72,7 @@ class Client(models.Model):
     userClient = models.OneToOneField(User, on_delete=models.CASCADE)
     rateClient = models.IntegerField(blank=True, null=True)
 
-    class Meta:
-        db_table = 'client'
-        managed = True
-
+    
     def __str__(self):
        return '%s: %s %s' % (self.idClient, self.userClient, self.rateClient)
 
@@ -117,10 +81,7 @@ class TypeService(models.Model):
     nameTypeService = models.CharField(max_length=45, blank=True, null=True)
     descriptionTypeService = models.CharField(max_length=200, blank=True, null=True)
 
-    class Meta:
-        db_table = 'typeService'
-        managed = True
-
+    
     def __str__(self):
        return '%s: %s %s' % (self.idTypeService, self.nameTypeService, self.descriptionTypeService)
 
@@ -131,10 +92,7 @@ class Fare(models.Model):
     maxFare = models.IntegerField(blank=True, null=True)
     priceFare = models.FloatField(blank=True, null=True)
 
-    class Meta:
-        db_table = 'fare'
-        managed = True
-
+    
     def __str__(self):
        return '%s: %s %s %s %s' % (self.idFare, self.idCompanyFare, self.idTypeServiceFare, self.maxFare, self.priceFare)
 
@@ -149,10 +107,7 @@ class Payment(models.Model):
     datePayment = models.DateTimeField(blank=True, null=True)
     tokenPayment = models.CharField(max_length=200, blank=True, null=True)
 
-    class Meta:
-        db_table = 'payment'
-        managed = True
-
+    
     def __str__(self):
         return self.amountPayment
 
@@ -163,10 +118,7 @@ class Location(models.Model):
     nameLocation = models.CharField(max_length=200, blank=True, null=True)
     tokenLocation = models.CharField(max_length=200, blank=True, null=True)
 
-    class Meta:
-        db_table = 'location'
-        managed = True
-
+    
     def __str__(self):
        return '%s: %s %s %s %s' % (self.idLocation, self.latitudeLocation, self.longitudeLocation, self.nameLocation, self.tokenLocation)
 
@@ -185,19 +137,13 @@ class Service(models.Model):
     isReservationService = models.BooleanField(blank=True, null=True)
     stateService = models.IntegerField(blank=True, null=True)
 
-    class Meta:
-        db_table = 'service'
-        managed = True
-
+    
     def __str__(self):
        return '%s: %s %s %s' % (self.idService, self.endidLocation, self.startDate, self.endDate)
 
 
 class Details(models.Model):
-    service = models.ManyToManyField(Service)
-    user = models.ManyToManyField(User)
+    service = models.ForeignKey(Service, blank=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, blank=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=25)
-    class Meta:
-        db_table = 'details'
-        managed = True
-
+    
