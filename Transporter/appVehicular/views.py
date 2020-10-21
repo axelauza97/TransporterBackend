@@ -2,7 +2,9 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 from .models import *
 from .serializer import *
-from rest_framework.permissions import AllowAny
+
+from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework import permissions
 from django.views.generic import TemplateView
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
@@ -10,10 +12,10 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status, viewsets
 from rest_framework.decorators import api_view
-#from rest_framework.permissions import IsAuthenticated
-from rest_framework import permissions
+
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -31,12 +33,11 @@ class UserViewset(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    
 
 # Create your views here.
 #get, post
 class CompanyList(generics.ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 

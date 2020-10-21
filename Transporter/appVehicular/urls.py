@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
     url(r'^auth/',include('rest_framework_social_oauth2.urls')),
 
-    url(r'^company/$',CompanyList.as_view(), name ='company'),
+    url(r'^company/$', CompanyList.as_view(), name ='company'),
     url(r'^company/(?P<pk>[0-9]+)/$', CompanyDetail.as_view()),
 
     url(r'^driver/$',DriverList.as_view(), name ='driver'),
