@@ -19,6 +19,7 @@ class Company(models.Model):
 
 class User(AbstractUser):
     company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
+    image = models.FileField(blank=True, null=True, upload_to='profiles')
     
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

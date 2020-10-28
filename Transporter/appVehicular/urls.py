@@ -1,14 +1,20 @@
 # Use include() to add paths from the appVehicular
 from .views import *
+from django.conf.urls.static import static
+from django.conf import settings
 from django.urls import path, include
 from django.conf.urls import url, handler404
-from rest_framework.urlpatterns import format_suffix_patterns
 from appVehicular import views
-from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
     url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
     url(r'^auth/',include('rest_framework_social_oauth2.urls')),
+
+    url(r'user/create/$',CreateUser.as_view()),
+    url(r'user/$',UserList.as_view(),name='User'),
+    url(r'user/update/<int:pk>/$', UpdateUser.as_view()),
+    url(r'user/<str:pk>/$', GetUser.as_view()),
+    url(r'user/delete/<int:pk>/$', DeleteUser.as_view()),
 
     url(r'^company/$', CompanyList.as_view(), name ='company'),
     url(r'^company/(?P<pk>[0-9]+)/$', CompanyDetail.as_view()),
@@ -27,4 +33,4 @@ urlpatterns = [
 
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

@@ -29,12 +29,34 @@ class CustomAuthToken(ObtainAuthToken):
             'isAdmin': user.is_superuser,
         })
 
-class UserViewset(viewsets.ModelViewSet):
+#USUARIO
+#--------------------------------------------------------------
+class CreateUser(generics.CreateAPIView):
     permission_classes = (AllowAny,)
-    queryset = User.objects.all()
+    queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserSerializer
 
-# Create your views here.
+class GetUser(generics.RetrieveAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.filter(is_superuser=False)
+    serializer_class = UserSerializer
+
+class UserList(generics.ListAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.filter(is_superuser=False)
+    serializer_class = UserSerializer
+
+class DeleteUser(generics.DestroyAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.filter(is_superuser=False)
+    serializer_class = UserSerializer
+
+class UpdateUser(generics.UpdateAPIView):
+    permission_classes = (IsAuthenticated,)
+    queryset = User.objects.filter(is_superuser=False)
+    serializer_class = UserSerializer
+
+
 #get, post
 class CompanyList(generics.ListCreateAPIView):
     permission_classes = (IsAuthenticated,)
@@ -51,14 +73,14 @@ class CompanyList(generics.ListCreateAPIView):
 
 #update, delete
 class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     queryset = Company.objects.all()
     serializer_class = CompanySerializer
 
 
 #get, post
 class DriverList(generics.ListCreateAPIView):
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
 
