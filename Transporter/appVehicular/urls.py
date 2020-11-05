@@ -5,16 +5,26 @@ from django.conf import settings
 from django.urls import path, include
 from django.conf.urls import url, handler404
 from appVehicular import views
+from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
+
+
 
 urlpatterns = [
     url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
     url(r'^auth/',include('rest_framework_social_oauth2.urls')),
 
+    url(r'^login/', include('rest_social_auth.urls_token')),
+
+    url(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
+    url(r'^message/$',MessageFCM.as_view(), name ='MessageFCM'),
+
+    #url(r'^tokenFB/$',FacebookAuth.as_view(), name ='tokenFB'),
+
     url(r'user/create/$',CreateUser.as_view()),
     url(r'user/$',UserList.as_view(),name='User'),
-    url(r'user/update/<int:pk>/$', UpdateUser.as_view()),
-    url(r'user/<str:pk>/$', GetUser.as_view()),
-    url(r'user/delete/<int:pk>/$', DeleteUser.as_view()),
+    url(r'user/update/(?P<pk>[0-9]+)/$', UpdateUser.as_view()),
+    url(r'user/(?P<pk>[0-9]+)/$', GetUser.as_view()),
+    url(r'user/delete/(?P<pk>[0-9]+)/$', DeleteUser.as_view()),
 
     url(r'^company/$', CompanyList.as_view(), name ='company'),
     url(r'^company/(?P<pk>[0-9]+)/$', CompanyDetail.as_view()),

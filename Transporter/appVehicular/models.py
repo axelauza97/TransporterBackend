@@ -18,7 +18,7 @@ class Company(models.Model):
         return '%s: %s %s %s %s' % (self.idCompany, self.nameCompany, self.typeCompany, self.addressCompany, self.webpageCompany)
 
 class User(AbstractUser):
-    company = models.ForeignKey(Company, null=True, on_delete=models.CASCADE)
+    company = models.ForeignKey(Company, blank=True, null=True, on_delete=models.CASCADE)
     image = models.FileField(blank=True, null=True, upload_to='profiles')
     
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)

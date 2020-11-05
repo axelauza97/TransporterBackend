@@ -42,7 +42,9 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'appVehicular',
     'oauth2_provider',
+    'fcm_django',
     'social_django',
+    'rest_social_auth',
     'rest_framework_social_oauth2',
     'corsheaders',
 ]
@@ -157,7 +159,19 @@ STATIC_URL = '/static/'
 #STATIC_URL = '/static/'
 CORS_ALLOW_ALL_ORIGINS = True  # permite que cualquier domini entre; en produccion usar whitelist
 
-
+FCM_DJANGO_SETTINGS = {
+         # default: _('FCM Django')
+        "APP_VERBOSE_NAME": "Vehicular",
+         # Your firebase API KEY
+        "FCM_SERVER_KEY": "AIzaSyDyOAjp5gIPjWotSTutknSBodx4CitogoI",
+         # true if you want to have only one active device per registered user at a time
+         # default: False
+        "ONE_DEVICE_PER_USER": True,
+         # devices to which notifications cannot be sent,
+         # are deleted upon receiving error response from FCM
+         # default: False
+        "DELETE_INACTIVE_DEVICES": False,
+}
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
@@ -184,7 +198,7 @@ AUTHENTICATION_BACKENDS = (
 )
 
 SOCIAL_AUTH_URL_NAMESPACE = 'social'
-#LOGIN_REDIRECT_URL='/'
+LOGIN_REDIRECT_URL='http://localhost:8100/login/'
 #LOGOUT_REDIRECT_URL='/'
 
 # Google configuration
@@ -197,7 +211,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 
 # Facebook configuration
 
-SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/'
+#SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/tokenFB/'
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
 # Email is not sent by default, to get it, you must request the email permission.
@@ -205,6 +219,9 @@ SOCIAL_AUTH_FACEBOOK_SCOPE = ['email']
 SOCIAL_AUTH_FACEBOOK_PROFILE_EXTRA_PARAMS = {
     'fields': 'id, name, email'
 }
+
+#SOCIAL_AUTH_FIELDS_STORED_IN_SESSION = ['key']
+
 
 # Uploaded files
 MEDIA_ROOT = os.path.join(BASE_DIR, 'static')
