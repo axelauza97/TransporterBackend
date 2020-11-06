@@ -21,6 +21,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = 's)%xi3rob-o7!(rjtq1vc4t8&_a94!ca5+jo&xr^ggu7b5nw73'
 
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -41,11 +42,9 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'appVehicular',
-    'oauth2_provider',
     'fcm_django',
     'social_django',
     'rest_social_auth',
-    'rest_framework_social_oauth2',
     'corsheaders',
 ]
 
@@ -163,7 +162,7 @@ FCM_DJANGO_SETTINGS = {
          # default: _('FCM Django')
         "APP_VERBOSE_NAME": "Vehicular",
          # Your firebase API KEY
-        "FCM_SERVER_KEY": "AIzaSyDyOAjp5gIPjWotSTutknSBodx4CitogoI",
+        "FCM_SERVER_KEY": "AAAAkjaU_KQ:APA91bHkHveYfsBPbzBGoa-53cDYSzgG-Z5Rcq7HLrklDg4KpYGRXOjhS7XfJhqEAESAwQ2hsptAAMtKqeKFte0QLpkwe8pbZ2UNkJTLokWaNIPfmBKxB4PYl5ScsUSq3-P-zWPI-XCs",
          # true if you want to have only one active device per registered user at a time
          # default: False
         "ONE_DEVICE_PER_USER": True,
@@ -179,7 +178,6 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
-        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
 }
@@ -193,15 +191,15 @@ AUTHENTICATION_BACKENDS = (
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.google.GoogleOAuth',
 
-    'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',    
 )
 
-SOCIAL_AUTH_URL_NAMESPACE = 'social'
-LOGIN_REDIRECT_URL='http://localhost:8100/login/'
-#LOGOUT_REDIRECT_URL='/'
+LOGOUT_REDIRECT_URL='http://localhost:8000/'
+
 
 # Google configuration
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '767125300767-fbti9tafnkvdvk5t2m4poe7sv79a6h0f.apps.googleusercontent.com'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'sGCg0nRdlo3lXf4AiVR6zvih'
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
@@ -210,6 +208,8 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 # Facebook configuration
+SOCIAL_AUTH_FACEBOOK_KEY = '1034969293634110'
+SOCIAL_AUTH_FACEBOOK_SECRET = '9ac01bac616f497016a5e67c659d3402'
 
 #SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/tokenFB/'
 

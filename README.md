@@ -29,19 +29,31 @@ Details:
     python manage.py migrate --run-syncdb
     python manage.py migrate
 
-Primero login
-http://localhost:8000/api/auth/login/facebook
-http://localhost:8000/api/auth/login/google-oauth2/
-se crea registro en python social auth
 
-Luego cargar el token
-Con los datos de user social auths 
-(POST) http://localhost:8000/api/auth/convert-token?grant_type=convert_token&backend=facebook&token=EAAOtTJEZAuj4BAFZB8CpOpWtghjSwcHiDphv6Lo7ZCLkL3pAqKL2iaEYuzk1GsGNV7qPakc4ELLm1rGIM7SZAjRzlMvwmvgG63CgZC9ZA4r4POMOYZAD7xtzaYYR4CvHnvvmoel92iTsVNHWqDez8ZB1bx7gfvKHEN9loXTueDFtqCWvDOPUcdO9&client_id=HcfRA5CdaIWRvB86nkGhKNCnbM7t9b7NhQXGcIXA&client_secret=YcMq0S6fVpDFP7ZzxjyN0EZghuFQfg2tZQT7aIG5OmDGY1vB6CcnYwEmfmnBuIv3gehtfYsYfcMCpFKcKaxQBwLA852E1sg1DR4YxYqFZJdmM0Py8X6f9UJMkpqcdY2M
-token=access_token user social auth 
+pip install rest-social-auth
 
 
-En el BODY enviar access_token=<token> del anterior comando
+token--> Authorization : Token <token>
 
 
-consultar  rest-auth  y usar ese token
-sin social poner Authorization : Token <token>
+Manual
+
+  Facebook
+https://www.facebook.com/v8.0/dialog/oauth?client_id=1034969293634110&redirect_uri=http://localhost:8000/&state={state-param}
+
+  Google
+https://accounts.google.com/o/oauth2/v2/auth?
+ scope=https://www.googleapis.com/auth/userinfo.profile&
+ access_type=offline&
+ include_granted_scopes=true&
+ response_type=code&
+ redirect_uri=http://localhost:8000/&
+ client_id=767125300767-fbti9tafnkvdvk5t2m4poe7sv79a6h0f.apps.googleusercontent.com
+
+
+
+Copiar code de url redirigida y hacer post a http://localhost:8000/api/login/social/token/
+con form  provider 'facebook' y code 'lo de arriba'
+con form  provider 'google-oauth2' y code 'lo de arriba'
+
+recibe token de aplicacion

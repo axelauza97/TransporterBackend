@@ -56,7 +56,7 @@ class UpdateUser(generics.UpdateAPIView):
     queryset = User.objects.filter(is_superuser=False)
     serializer_class = UserSerializer
 
-
+from fcm_django.fcm import fcm_send_topic_message
 from fcm_django.models import FCMDevice
 
 
@@ -65,22 +65,8 @@ class MessageFCM(generics.CreateAPIView):
     permission_classes = (AllowAny,)
     def get(self, request, *args, **kwargs):
         device = FCMDevice.objects.all().first()
-        device.send_message("Title", "Message")
-        device.send_message(data={"test": "test"})
-        device.send_message(title="Title", body="Message", data={"test": "test"})
+        device.send_message(title="sssad", body="Message")
         return Response({'ddd'})
-
-#-----------------------------------------------
-'''class FacebookAuth(generics.CreateAPIView):
-    permission_classes = (AllowAny,)
-    def get(self, request, *args, **kwargs):
-        social = User.social_auth.get(provider='facebook')
-        print(social)
-
-        return Response({
-            'token': social.extra_data['access_token']
-        })
-'''
 
 
 #get, post

@@ -11,14 +11,12 @@ from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 urlpatterns = [
     url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
-    url(r'^auth/',include('rest_framework_social_oauth2.urls')),
 
     url(r'^login/', include('rest_social_auth.urls_token')),
 
     url(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
     url(r'^message/$',MessageFCM.as_view(), name ='MessageFCM'),
 
-    #url(r'^tokenFB/$',FacebookAuth.as_view(), name ='tokenFB'),
 
     url(r'user/create/$',CreateUser.as_view()),
     url(r'user/$',UserList.as_view(),name='User'),
