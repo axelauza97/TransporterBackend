@@ -45,3 +45,12 @@ En el BODY enviar access_token=<token> del anterior comando
 
 consultar  rest-auth  y usar ese token
 sin social poner Authorization : Token <token>
+  
+Install modules and run server:
+   pip install --upgrade pip
+   pip install django-oauth2-provider
+   pip install django-oauth-toolkit djangorestframework
+   pip install social-auth-app-django
+   pip install django-rest-framework-social-oauth2
+   pip install django-cors-headers
+   python manage.py runserver
