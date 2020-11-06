@@ -30,12 +30,6 @@ Details:
     python manage.py migrate
 
 
-pip install rest-social-auth
-
-
-token--> Authorization : Token <token>
-
-
 Manual
 
   Facebook
@@ -51,9 +45,20 @@ https://accounts.google.com/o/oauth2/v2/auth?
  client_id=767125300767-fbti9tafnkvdvk5t2m4poe7sv79a6h0f.apps.googleusercontent.com
 
 
-
 Copiar code de url redirigida y hacer post a http://localhost:8000/api/login/social/token/
 con form  provider 'facebook' y code 'lo de arriba'
 con form  provider 'google-oauth2' y code 'lo de arriba'
 
-recibe token de aplicacion
+recibe token de aplicacion de una red social
+
+token--> Authorization : Token <token>
+  
+Install modules and run server:
+   pip install --upgrade pip
+   pip install django-oauth2-provider
+   pip install django-oauth-toolkit djangorestframework
+   pip install social-auth-app-django
+   pip install rest-social-auth
+   pip install django-rest-framework-social-oauth2
+   pip install django-cors-headers
+   python manage.py runserver
