@@ -20,7 +20,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = ''
+SECRET_KEY = 's)%xi3rob-o7!(rjtq1vc4t8&_a94!ca5+jo&xr^ggu7b5nw73'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -37,16 +37,22 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'appVehicular',
     'rest_framework',
     'rest_framework.authtoken',
-    'appVehicular',
-#    'oauth2_provider',
-#    'social_django',
-#    'rest_framework_social_oauth2',
+    'oauth2_provider',
+    'social_django',
+    'rest_framework_social_oauth2',
     'corsheaders',
+    'fcm_django' ,
 ]
 
-AUTH_USER_MODEL = 'appVehicular.User'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587
+EMAIL_HOST_USER= 'ids2020transporter@gmail.com'
+EMAIL_HOST_PASSWORD= 'ingSoftware2020'
 
 #capa encima de backend de conexión , recursos disponibles externos
 MIDDLEWARE = [
@@ -74,8 +80,8 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                #'social_django.context_processors.backends',
-                #'social_django.context_processors.login_redirect',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
@@ -93,19 +99,14 @@ DATABASES = {
         'NAME': 'CTVehicular$DBCTVehicular',
         'USER': 'CTVehicular',
         'PASSWORD': 'idsCT2020',
-        'HOST': 'localhost',
-        'PORT': '3306',
-
+        'HOST': 'CTVehicular.mysql.pythonanywhere-services.com',
+        'default-character-set' : 'utf8',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 
 }
-'''
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-    }
-}'''
 
 
 # Password validation
@@ -148,26 +149,31 @@ STATIC_URL = '/static/'
 
 # default static files settings for PythonAnywhere.
 # see https://help.pythonanywhere.com/pages/DjangoStaticFiles for more info
-#MEDIA_ROOT = '/home/CTVehicular/Transporter/media'
-#MEDIA_URL = '/media/'
-#STATIC_ROOT = '/home/CTVehicular/Transporter/static'
-#STATIC_URL = '/static/'
+MEDIA_ROOT = '/home/CTVehicular/Transporter/media'
+MEDIA_URL = '/media/'
+STATIC_ROOT = '/home/CTVehicular/Transporter/static'
+STATIC_URL = '/static/'
 CORS_ALLOW_ALL_ORIGINS = True  # permite que cualquier domini entre; en produccion usar whitelist
 
 REST_FRAMEWORK = {
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticated',
-    ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
         # 'oauth2_provider.ext.rest_framework.OAuth2Authentication',  # django-oauth-toolkit < 1.0.0
-        #'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
-       #'rest_framework_social_oauth2.authentication.SocialAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
+        'rest_framework_social_oauth2.authentication.SocialAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
     ),
 }
-'''AUTHENTICATION_BACKENDS = (
-    #Agregar Facebook
 
+FCM_DJANGO_SETTINGS = {
+    "APP_VERBOSE_NAME": "Vehicular",
+    "FCM_SERVER_KEY": "AAAAkjaU_KQ:APA91bHkHveYfsBPbzBGoa-53cDYSzgG-Z5Rcq7HLrklDg4KpYGRXOjhS7XfJhqEAESAwQ2hsptAAMtKqeKFte0QLpkwe8pbZ2UNkJTLokWaNIPfmBKxB4PYl5ScsUSq3-P-zWPI-XCs",
+    "ONE_DEVICE_PER_USER": True,
+    "DELETE_INACTIVE_DEVICES": False,
+}
+
+AUTHENTICATION_BACKENDS = (
+    #Agregar Facebook
 
     # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
@@ -175,12 +181,12 @@ REST_FRAMEWORK = {
     'rest_framework_social_oauth2.backends.DjangoOAuth2',
     'django.contrib.auth.backends.ModelBackend',
 )
-'''
+
 
 
 # Google configuration
-SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = ''
-SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = ''
+SOCIAL_AUTH_GOOGLE_OAUTH2_KEY = '1016512674468'
+SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = 'AIzaSyBMKSh9KDGw0wJUiXjDFDhY3-Br-wxb_Zg'
 
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
