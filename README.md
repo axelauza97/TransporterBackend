@@ -61,4 +61,5 @@ Install modules and run server:
    pip install rest-social-auth
    pip install django-rest-framework-social-oauth2
    pip install django-cors-headers
+   pip install fcm-django
    python manage.py runserver

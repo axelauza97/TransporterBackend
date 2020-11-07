@@ -22,7 +22,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # SECURITY WARNING: keep the secret key used in production secret!
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -162,6 +161,7 @@ FCM_DJANGO_SETTINGS = {
         "APP_VERBOSE_NAME": "Vehicular",
          # Your firebase API KEY
          # true if you want to have only one active device per registered user at a time
+        "FCM_SERVER_KEY": "",
          # default: False
         "ONE_DEVICE_PER_USER": True,
          # devices to which notifications cannot be sent,
@@ -197,6 +197,7 @@ LOGOUT_REDIRECT_URL='http://localhost:8000/'
 
 # Google configuration
 # Define SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE to get extra permissions from Google.
+
 SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
     'https://www.googleapis.com/auth/userinfo.email',
     'https://www.googleapis.com/auth/userinfo.profile',
@@ -205,6 +206,7 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 # Facebook configuration
 
 #SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/tokenFB/'
+
 
 # Define SOCIAL_AUTH_FACEBOOK_SCOPE to get extra permissions from Facebook.
 # Email is not sent by default, to get it, you must request the email permission.

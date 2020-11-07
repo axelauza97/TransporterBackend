@@ -1,17 +1,38 @@
 from .models import *
 from rest_framework import serializers
 
+
 class UserSerializer(serializers.ModelSerializer):
+
     def create(self, validated_data):
         user = User.objects.create(**validated_data)
         user.set_password(validated_data['password'])
         user.save()
         return user
+
     class Meta:
         model = User
-        fields = '__all__'
-        extra_kwargs = {'password': {'write_only': True}}
+        fields = (
+            'id',
+            'username',
+            'email',
+            'first_name',
+            'last_name',
+            'is_active',
+        )
+        extra_kwargs = {
+            'username': {'validators': []},
+        }
         
+        
+class ChangePasswordSerializer(serializers.Serializer):
+    model = User
+
+    """
+    Serializer for password change endpoint.
+    """
+    old_password = serializers.CharField(required=True)
+    new_password = serializers.CharField(required=True)
 
 class CompanySerializer(serializers.ModelSerializer):
     class Meta:

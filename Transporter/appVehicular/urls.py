@@ -8,7 +8,6 @@ from appVehicular import views
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 
-
 urlpatterns = [
     url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
 
@@ -21,6 +20,8 @@ urlpatterns = [
     url(r'user/create/$',CreateUser.as_view()),
     url(r'user/$',UserList.as_view(),name='User'),
     url(r'user/update/(?P<pk>[0-9]+)/$', UpdateUser.as_view()),
+    url(r'user/update/password/(?P<pk>[0-9]+)/$', ChangePasswordView.as_view()),
+
     url(r'user/(?P<pk>[0-9]+)/$', GetUser.as_view()),
     url(r'user/delete/(?P<pk>[0-9]+)/$', DeleteUser.as_view()),
 
