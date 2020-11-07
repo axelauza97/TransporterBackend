@@ -1,9 +1,5 @@
 from django.db import models
-from django.contrib.auth.models import AbstractUser
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from rest_framework.authtoken.models import Token
-from django.conf import settings
+from django.contrib.auth.models import User
 
 # Create your models here.
 
@@ -21,84 +17,78 @@ class Company(models.Model):
     def __str__(self):
         return '%s: %s %s %s %s' % (self.idCompany, self.nameCompany, self.typeCompany, self.addressCompany, self.webpageCompany)
 
-class User(AbstractUser):
-    company = models.ManyToManyField(Company, blank=True)
-    class Meta:
-        db_table = 'user'
-        managed = True
-
-@receiver(post_save, sender=settings.AUTH_USER_MODEL)
-def create_auth_token(sender, instance=None, created=False, **kwargs):
-    if created:
-        Token.objects.create(user=instance)
-
-class Chat(models.Model):
-    typee = models.CharField(max_length=200)
-    userID1 = models.ManyToManyField(User, related_name="userID1", blank=True)
-    userID2 = models.ManyToManyField(User, related_name="userID2",blank=True)
-    date = models.DateField()
-    class Meta:
-        db_table = 'chat'
-        managed = True
-
-class UserChat(models.Model):
-    user = models.ManyToManyField(User, blank=True)
-    chat = models.ManyToManyField(Chat, blank=True)
-    date = models.DateField()
-    class Meta:
-        db_table = 'userchat'
-        managed = True
-
-class Message(models.Model):
-    user = models.ManyToManyField(User, blank=True)
-    chat = models.ManyToManyField(Chat, blank=True)
-    sendDate = models.DateField()
-    content = models.CharField(max_length=200)
-    class Meta:
-        db_table = 'message'
-        managed = True
-
-class Employee(models.Model):
-    user = models.ManyToManyField(User, blank=True)
-    class Meta:
-        db_table = 'employee'
-        managed = True
-
-class Suggestion(models.Model):
-    email = models.CharField(max_length=255)
-    comment = models.CharField(max_length=255)
-    atendido = models.BooleanField()
-    class Meta:
-        db_table = 'suggestion'
-        managed = True
-   
-class Vehicle(models.Model):
-    idVehicle = models.AutoField(primary_key=True)
-    brandVehicle = models.CharField(max_length=45, blank=True, null=True)
-    typeVehicle = models.CharField(max_length=45, blank=True, null=True)
-    modelVehicle = models.CharField(max_length=45, blank=True, null=True)
-    colorVehicle = models.CharField(max_length=45, blank=True, null=True)
+class TypeService(models.Model):
+    idTypeService = models.AutoField(primary_key=True)
+    nameTypeService = models.CharField(max_length=45, blank=True, null=True)
+    descriptionTypeService = models.CharField(max_length=200, blank=True, null=True)
 
     class Meta:
-        db_table = 'vehicle'
+        db_table = 'typeService'
         managed = True
 
     def __str__(self):
-        return '%s: %s %s %s %s' % (self.idVehicle, self.brandVehicle, self.typeVehicle, self.modelVehicle, self.colorVehicle)
+       return '%s: %s %s' % (self.idTypeService, self.nameTypeService, self.descriptionTypeService)
 
+class Manager(models.Model):
+    idManager = models.AutoField(primary_key=True)
+    userManager = models.OneToOneField(User, on_delete=models.CASCADE)
+    class Meta:
+        db_table = 'Manager'
+        managed = True
+
+    def __str__(self):
+        return '%s: %s' % (self.idManager, self.userManager)
 
 class Driver(models.Model):
     idDriver = models.AutoField(primary_key=True)
-    userDriver = models.OneToOneField(User, on_delete=models.CASCADE)
+    userDriver = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
+    emailDriver = models.CharField(max_length=100, blank=True, null=True)
+    companyDriver = models.ForeignKey(Company, models.DO_NOTHING, db_column='idCompany',null=True)
+    ciDriver = models.CharField(max_length=10, blank=True, null=True)
+    nameDriver = models.CharField(max_length=30, blank=True, null=True)
+    lnameDriver = models.CharField(max_length=30, blank=True, null=True)
+    birthdateDriver = models.DateTimeField(blank=True, null=True)
+    sexDriver = models.CharField(max_length=10, blank=True, null=True)
+    addressDriver = models.CharField(max_length=100, blank=True, null=True)
+    phoneDriver = models.CharField(max_length=10, blank=True, null=True)
+    cipictureDriver = models.CharField(max_length=1000, blank=True, null=True) # cedula foto
+    licenceDriver = models.CharField(max_length=1000, blank=True, null=True) #licencia foto
     rateDriver = models.IntegerField(blank=True, null=True)
-    vehicleDriver = models.ForeignKey(Vehicle, models.DO_NOTHING, db_column='idVehicle')
+    stateDriver = models.BooleanField(default=False) # habilitado inhabilitado
+    activeDriver = models.BooleanField(default=False) # REgistrar en el sistema
 
     class Meta:
         db_table = 'drive'
         managed = True
 
     def __str__(self):
-       return '%s: %s %s %s' % (self.idDriver, self.userDriver, self.rateDriver, self.vehicleDriver)
+       return '%s: %s %s %s %s %s %s %s %s %s %s %s %s %s %s %s' % (self.idDriver, self.userDriver,self.emailDriver,
+       self.companyDriver,self.ciDriver, self.nameDriver, self.lnameDriver, self.birthdateDriver,
+       self.sexDriver, self.addressDriver, self.phoneDriver, self.cipictureDriver, self.licenceDriver,
+       self.rateDriver, self.stateDriver, self.activeDriver)
+
+class Vehicle(models.Model):
+    idVehicle = models.AutoField(primary_key=True)
+    userVehicle = models.ForeignKey(Driver, models.DO_NOTHING, db_column='idDriver',null=True)
+    plateVehicle = models.CharField(max_length=10, blank=True, null=True)
+    brandVehicle = models.CharField(max_length=45, blank=True, null=True)
+    modelVehicle = models.CharField(max_length=45, blank=True, null=True)
+    yearVehicle = models.IntegerField(blank=True, null=True)
+    colorVehicle = models.CharField(max_length=45, blank=True, null=True)
+    registrationVehicle = models.CharField(max_length=1000, blank=True, null=True) #matricula foto
+    plpictureVehicle = models.CharField(max_length=1000, blank=True, null=True) #placa foto
+    pictureVehicle = models.CharField(max_length=1000, blank=True, null=True) #vehiculo foto
+    typeServiceVehicle = models.ForeignKey(TypeService, models.DO_NOTHING, db_column='idTypeService',null=True)
+    typeVehicle = models.CharField(max_length=45, blank=True, null=True)
+
+    class Meta:
+        db_table = 'vehicle'
+        managed = True
+
+    def __str__(self):
+        return '%s: %s %s %s %s %s %s %s %s %s %s' % (self.idVehicle,self.userVehicle, self.brandVehicle, self.plateVehicle,
+        self.modelVehicle, self.yearVehicle, self.colorVehicle, self.registrationVehicle, self.pictureVehicle,
+        self.plpictureVehicle,self.typeServiceVehicle, self.typeVehicle)
 
 class Client(models.Model):
     idClient = models.AutoField(primary_key=True)
@@ -111,18 +101,6 @@ class Client(models.Model):
 
     def __str__(self):
        return '%s: %s %s' % (self.idClient, self.userClient, self.rateClient)
-
-class TypeService(models.Model):
-    idTypeService = models.AutoField(primary_key=True)
-    nameTypeService = models.CharField(max_length=45, blank=True, null=True)
-    descriptionTypeService = models.CharField(max_length=200, blank=True, null=True)
-
-    class Meta:
-        db_table = 'typeService'
-        managed = True
-
-    def __str__(self):
-       return '%s: %s %s' % (self.idTypeService, self.nameTypeService, self.descriptionTypeService)
 
 class Fare(models.Model):
     idFare = models.AutoField(primary_key=True)
@@ -192,12 +170,17 @@ class Service(models.Model):
     def __str__(self):
        return '%s: %s %s %s' % (self.idService, self.endidLocation, self.startDate, self.endDate)
 
+class Police(models.Model):
+    idPolice = models.AutoField(primary_key=True)
+    companyPolice = models.ForeignKey(Company, models.DO_NOTHING, db_column='idCompany',null=True)
+    descriptionPolice = models.TextField(blank=True, null=True)
+    typePolice = models.CharField(max_length=200, blank=True, null=True)
 
-class Details(models.Model):
-    service = models.ManyToManyField(Service)
-    user = models.ManyToManyField(User)
-    description = models.CharField(max_length=25)
     class Meta:
-        db_table = 'details'
+        db_table = 'police'
         managed = True
+
+    def __str__(self):
+       return '%s: %s %s %s' % (self.idPolice, self.companyPolice,
+       self.descriptionPolice, self.typePolice)
 
