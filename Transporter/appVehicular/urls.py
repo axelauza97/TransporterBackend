@@ -3,13 +3,16 @@ from .views import *
 from django.conf.urls import url, handler404
 from rest_framework.urlpatterns import format_suffix_patterns
 from appVehicular import views
-from django.views.decorators.csrf import csrf_exempt
 
 urlpatterns = [
-    url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
-
     url(r'^company/$',CompanyList.as_view(), name ='company'),
     url(r'^company/(?P<pk>[0-9]+)/$', CompanyDetail.as_view()),
+
+    url(r'^Manager/$',ManagerList.as_view(), name ='manager'),
+    url(r'^Manager/(?P<pk>[0-9]+)/$', ManagerDetail.as_view()),
+
+    url(r'^vehicle/$',VehicleList.as_view(), name ='vehicle'),
+    url(r'^vehicle/(?P<pk>[0-9]+)/$', VehicleDetail.as_view()),
 
     url(r'^driver/$',DriverList.as_view(), name ='driver'),
     url(r'^driver/(?P<pk>[0-9]+)/$', DriverDetail.as_view()),
@@ -25,4 +28,9 @@ urlpatterns = [
 
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
+
+    url(r'^police/$',PoliceList.as_view(), name ='police'),
+    url(r'^police/(?P<pk>[0-9]+)/$', PoliceDetail.as_view()),
+
+    url('users/',UserCreate.as_view(), name='user_create'),
 ]
