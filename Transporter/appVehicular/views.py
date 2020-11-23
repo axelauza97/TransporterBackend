@@ -2,7 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from rest_framework import generics
 from .models import *
 from .serializer import *
-
+from .forms import *
 from rest_framework.permissions import AllowAny,IsAuthenticated
 from rest_framework import permissions
 from django.views.generic import TemplateView
@@ -92,14 +92,29 @@ from fcm_django.models import FCMDevice
 
 
 
-class MessageFCM(APIView):
+class NotificationFCM(APIView):
     permission_classes = (AllowAny,)
-    def get(self, request, *args, **kwargs):
-        devices = FCMDevice.objects.all()
+    def post(self, request, *args, **kwargs):
+        form = NotificationForm(request.POST)
+        if form.is_valid():
+            title = form.cleaned_data['title']
+            body = form.cleaned_data['body']
+            user = form.cleaned_data['user']
+            print(title,body,user)
+            print(Driver.objects.values('userDriver'))
+        if user=="0":   
+            devices = FCMDevice.objects.filter(user__in=Driver.objects.values('userDriver'))
+        if user=="1":   
+            devices = FCMDevice.objects.filter(user__in=Client.objects.values('userClient'))
+        if user=="2":   
+            devices = FCMDevice.objects.filter(user__in=Employee.objects.values('user'))
+
         for device in devices:
             print(device)
-            device.send_message(title="QUINTOO MENSAJE", body="MENSAJEEE!")
-        return Response({'ddd'})
+            device.send_message(title=title, body=body)
+            device.is_active=True
+            device.save()
+        return Response({'Notification sent successfully'})
 
 
 #get, post

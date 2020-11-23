@@ -156,20 +156,6 @@ STATIC_URL = '/static/'
 #STATIC_URL = '/static/'
 CORS_ALLOW_ALL_ORIGINS = True  # permite que cualquier domini entre; en produccion usar whitelist
 
-FCM_DJANGO_SETTINGS = {
-         # default: _('FCM Django')
-        "APP_VERBOSE_NAME": "Vehicular",
-         # Your firebase API KEY
-         # true if you want to have only one active device per registered user at a time
-        "FCM_SERVER_KEY": "",
-         # default: False
-        "ONE_DEVICE_PER_USER": True,
-         # devices to which notifications cannot be sent,
-         # are deleted upon receiving error response from FCM
-         # default: False
-        "DELETE_INACTIVE_DEVICES": False,
-}
-
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
         'rest_framework.permissions.IsAuthenticated',
@@ -204,7 +190,6 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SCOPE = [
 ]
 
 # Facebook configuration
-
 #SOCIAL_AUTH_LOGIN_REDIRECT_URL = '/api/tokenFB/'
 
 

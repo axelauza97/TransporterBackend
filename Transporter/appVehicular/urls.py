@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^login/', include('rest_social_auth.urls_token')),
 
     url(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
-    url(r'^message/$',MessageFCM.as_view(), name ='MessageFCM'),
+    url(r'^notification/$',NotificationFCM.as_view(), name ='NotificationFCM'),
 
 
     url(r'user/create/$',CreateUser.as_view()),

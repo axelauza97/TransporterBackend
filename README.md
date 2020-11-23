@@ -53,13 +53,3 @@ recibe token de aplicacion de una red social
 
 token--> Authorization : Token <token>
   
-Install modules and run server:
-   pip install --upgrade pip
-   pip install django-oauth2-provider
-   pip install django-oauth-toolkit djangorestframework
-   pip install social-auth-app-django
-   pip install rest-social-auth
-   pip install django-rest-framework-social-oauth2
-   pip install django-cors-headers
-   pip install fcm-django
-   python manage.py runserver
