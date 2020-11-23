@@ -43,3 +43,4 @@ urlpatterns = [
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#hola
