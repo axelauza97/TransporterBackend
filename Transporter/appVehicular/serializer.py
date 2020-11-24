@@ -78,3 +78,8 @@ class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = '__all__'
+
+class PoliceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Police
+        fields = '__all__'

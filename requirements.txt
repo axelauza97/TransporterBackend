@@ -1,0 +1,14 @@
+# To activate this run
+#
+# pip3 install -r requirements.txt
+#
+Django>=2.2.7.0
+djangorestframework>=3.10.3
+django-oauth2-provider>=0.2.6.1
+django-oauth-toolkit>=1.3.3
+social-auth-app-django>=3.3.3
+rest-social-auth>=4.2.0
+django-rest-framework-social-oauth2>=1.1.0
+django-cors-headers>=3.5.0
+fcm-django>=0.3.4
+pytz>=2020.4

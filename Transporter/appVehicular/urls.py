@@ -31,6 +31,9 @@ urlpatterns = [
     url(r'^driver/$',DriverList.as_view(), name ='driver'),
     url(r'^driver/(?P<pk>[0-9]+)/$', DriverDetail.as_view()),
 
+    url(r'^vehicle/$',VehicleList.as_view(), name ='vehicle'),
+    url(r'^vehicle/(?P<pk>[0-9]+)/$', VehicleDetail.as_view()),
+
     url(r'^client/$',ClientList.as_view(), name ='client'),
     url(r'^client/(?P<pk>[0-9]+)/$', ClientDetail.as_view()),
 
@@ -42,4 +45,8 @@ urlpatterns = [
 
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
+
+    url(r'^police/$',PoliceList.as_view(), name ='police'),
+    url(r'^police/(?P<pk>[0-9]+)/$', PoliceDetail.as_view()),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
