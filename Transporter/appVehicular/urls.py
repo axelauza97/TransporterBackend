@@ -45,8 +45,13 @@ urlpatterns = [
 
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
+<<<<<<< HEAD
 
     url(r'^police/$',PoliceList.as_view(), name ='police'),
     url(r'^police/(?P<pk>[0-9]+)/$', PoliceDetail.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+=======
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+#hola
+>>>>>>> 7d7545d70fbb9f46c5b48cc7de0eac67a4ded7ea
