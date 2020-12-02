@@ -152,7 +152,6 @@ class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
 
 #get, post
 class DriverList(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
 
@@ -169,6 +168,22 @@ class DriverDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
 
+class VehicleList(generics.ListCreateAPIView):
+    queryset = Vehicle.objects.all()
+    serializer_class = VehicleSerializer
+
+    def get_object(self):
+        queryset = self.get_queryset()
+        obj = get_object_or_404(
+            queryset,
+            pk = self.kwargs['pk'],
+        )
+        return obj
+
+#update, delete
+class VehicleDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Vehicle.objects.all()
+    serializer_class = VehicleSerializer
 
 #get, post
 class ClientList(generics.ListCreateAPIView):
@@ -234,6 +249,5 @@ class FareList(generics.ListCreateAPIView):
 class FareDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Fare.objects.all()
     serializer_class = FareSerializer
-
 
 
