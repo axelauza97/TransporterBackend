@@ -1,6 +1,11 @@
 from .models import *
 from rest_framework import serializers
 
+class CompanySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Company
+        fields = '__all__'
+
 
 class UserSerializer(serializers.ModelSerializer):
 
@@ -24,8 +29,8 @@ class UserSerializer(serializers.ModelSerializer):
         extra_kwargs = {
             'username': {'validators': []},
         }
-        
-        
+
+
 class ChangePasswordSerializer(serializers.Serializer):
     model = User
 
@@ -35,9 +40,14 @@ class ChangePasswordSerializer(serializers.Serializer):
     old_password = serializers.CharField(required=True)
     new_password = serializers.CharField(required=True)
 
-class CompanySerializer(serializers.ModelSerializer):
+class EmployeeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Company
+        model = Employee
+        fields = '__all__'
+
+class SuggestionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Suggestion
         fields = '__all__'
 
 class VehicleSerializer(serializers.ModelSerializer):
@@ -78,4 +88,14 @@ class LocationSerializer(serializers.ModelSerializer):
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
+        fields = '__all__'
+
+class LocationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Location
+        fields = '__all__'
+
+class DetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Details
         fields = '__all__'

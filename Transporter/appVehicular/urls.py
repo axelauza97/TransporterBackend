@@ -8,7 +8,13 @@ from appVehicular import views
 from fcm_django.api.rest_framework import FCMDeviceAuthorizedViewSet
 
 
+from rest_framework.routers import DefaultRouter
+
+router=DefaultRouter()
+router.register(r'service',views.ServiceView,basename='service')
+    
 urlpatterns = [
+    url(r'',include(router.urls)),
     url(r'^rest-auth/$',CustomAuthToken.as_view(), name ='token'),
 
     url(r'^login/', include('rest_social_auth.urls_token')),
@@ -34,13 +40,10 @@ urlpatterns = [
     url(r'^client/$',ClientList.as_view(), name ='client'),
     url(r'^client/(?P<pk>[0-9]+)/$', ClientDetail.as_view()),
 
-    url(r'^service/$',ServiceList.as_view(), name ='service'),
-    url(r'^service/(?P<pk>[0-9]+)/$', ServiceDetail.as_view()),
-
+    
     url(r'^typeservice/$',TypeServiceList.as_view(), name ='typeservice'),
     url(r'^typeservice/(?P<pk>[0-9]+)/$', TypeServiceDetail.as_view()),
 
     url(r'^fare/$',FareList.as_view(), name ='fare'),
     url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-#hola

@@ -110,7 +110,7 @@ class Payment(models.Model):
 
     
     def __str__(self):
-        return self.amountPayment
+        return str(self.amountPayment)
 
 class Location(models.Model):
     idLocation = models.AutoField(primary_key=True)
