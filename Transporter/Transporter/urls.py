@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/', include('appVehicular.urls')),
     path('docs/', schema_view),
+    path('auth/', include('rest_framework_social_oauth2.urls')),
 
     #path('social-auth/', include('social_django.urls', namespace='social'))
     

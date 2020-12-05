@@ -20,8 +20,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 's)%xi3rob-o7!(rjtq1vc4t8&_a94!ca5+jo&xr^ggu7b5nw73'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
@@ -41,10 +39,12 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'appVehicular',
     'fcm_django',
+    'oauth2_provider',
     'social_django',
+    'rest_framework_social_oauth2',
     'rest_social_auth',
     'corsheaders',
-    'rest_framework_swagger',
+    #'rest_framework_swagger',
 ]
 
 AUTH_USER_MODEL = 'appVehicular.User'
@@ -176,11 +176,12 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
+        'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
 }
 
-REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
+#REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
 
 
 AUTHENTICATION_BACKENDS = (
@@ -191,6 +192,7 @@ AUTHENTICATION_BACKENDS = (
     # Google OAuth2
     'social_core.backends.google.GoogleOAuth2',
     'social_core.backends.google.GoogleOAuth',
+    'rest_framework_social_oauth2.backends.DjangoOAuth2',
 
     'django.contrib.auth.backends.ModelBackend',    
 )
