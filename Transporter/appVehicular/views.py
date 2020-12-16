@@ -20,6 +20,14 @@ from rest_framework.authtoken.models import Token
 from fcm_django.fcm import fcm_send_topic_message
 from fcm_django.models import FCMDevice
 import json
+from django.db import transaction
+
+from django.http import JsonResponse
+
+
+"""obtener pk de client y driver por user"""
+
+
 
 class CustomAuthToken(ObtainAuthToken):
     def post(self, request, *args, **kwargs):
@@ -47,8 +55,8 @@ class NotificationFCM(APIView):
             title = form.cleaned_data['title']
             body = form.cleaned_data['body']
             user = form.cleaned_data['user']
-            data = json.loads(form.cleaned_data['data'])
-            print(title,body,user,data)
+            data = eval(form.cleaned_data['data'])
+            print(title,body,user,json.dum(data))
             print(Driver.objects.values('userDriver'))
             notify(title,body,user,data)
             return Response({'Notification sent successfully'})
@@ -69,6 +77,76 @@ def notify(title,body,user,data):
         device.is_active=True
         device.save()
 
+
+class AcceptService(APIView):
+    permission_classes = (AllowAny,)
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        form = AcceptServiceForm(request.POST)
+        if form.is_valid():
+            servicePk=form.cleaned_data['service']
+            user_driverPk=form.cleaned_data['driver']
+            user_clientPk=form.cleaned_data['client']
+            data = eval(form.cleaned_data['data'])
+            service=Service.objects.get(pk=servicePk) 
+            if service.stateService==0:
+                device = FCMDevice.objects.get(user=user_clientPk)
+                service.stateService=1
+                driverPk=User.objects.get(pk=user_driverPk)
+                driver=Driver.objects.get(userDriver=driverPk)      
+                service.idDriverService=driver
+                service.save()
+                device.send_message(title="Atencion", body="Servicio Assignado",data=data)
+                device.is_active=True
+                device.save()
+                return Response({'Servicio assignado'})
+            else:
+                return Response({'Servicio ya fue assignado'})
+        else:
+            return Response({'Error'})
+
+class GetPk(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, *args, **kwargs,):
+        user = int(kwargs.get('user', 0))
+        typee = int(kwargs.get('typee', 0))
+        #Driver
+        if typee==0:
+            pk=Driver.objects.get(userDriver=user).pk
+        #Client
+        elif typee==1:
+            pk=Client.objects.get(userClient=user).pk
+        else:
+            return Response({"Error"})
+        return Response({"pk":pk})
+
+class RecordService(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, *args, **kwargs,):
+        pk = int(kwargs.get('pk', 0))
+        typee = int(kwargs.get('typee', 0))
+        #Driver
+        if typee==0:
+            services=Service.objects.filter(idDriverService=pk)
+        #Client
+        elif typee==1:
+            services=Service.objects.filter(idClientService=pk)
+        else:
+            return Response({"Error"})
+        data = list(services.values())
+        return JsonResponse(data, safe=False)  
+        
+
+class DeleteFCMDevice(APIView):
+    permission_classes = (AllowAny,)
+    def delete(self, request, *args, **kwargs):
+        user=kwargs.get('user', 0)
+        if user==0:
+            return Response({"Error"})
+        devices=FCMDevice.objects.filter(user=user)
+        for device in devices:
+            device.delete()
+        return Response({"Successful"})
 
 #USUARIO
 #--------------------------------------------------------------
@@ -211,8 +289,10 @@ class ServiceView(viewsets.ModelViewSet):
     def perform_create(self, request):
         service=self.get_serializer(data=request.data)
         if service.is_valid():
-            service.save()
-            notify(title="Nuevo Servicio",body="CUERPO",user="0",data=request.data)
+            new_service=service.save()
+            dictService=request.data
+            dictService['pk']=new_service.pk
+            notify(title="Atencion",body="Nuevo Servicio",user="0",data=dictService)
 
 #get, post
 class TypeServiceList(generics.ListCreateAPIView):

@@ -10,3 +10,9 @@ class NotificationForm(forms.Form):
     body = forms.CharField(max_length=255)
     user = forms.ChoiceField(choices = USERS) 
     data = forms.CharField()
+
+class AcceptServiceForm(forms.Form):
+    service=forms.IntegerField()
+    driver=forms.IntegerField()
+    client=forms.IntegerField()
+    data = forms.CharField()

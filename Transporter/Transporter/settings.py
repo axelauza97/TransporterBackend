@@ -161,6 +161,7 @@ FCM_DJANGO_SETTINGS = {
          # default: _('FCM Django')
         "APP_VERBOSE_NAME": "Vehicular",
          # Your firebase API KEY
+      
          # true if you want to have only one active device per registered user at a time
          # default: False
         "ONE_DEVICE_PER_USER": True,

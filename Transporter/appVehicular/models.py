@@ -153,9 +153,15 @@ class Location(models.Model):
        return '%s: %s %s %s %s' % (self.idLocation, self.latitudeLocation, self.longitudeLocation, self.nameLocation, self.tokenLocation)
 
 class Service(models.Model):
+    states =( 
+    (0, "UNASSIGNED"), 
+    (1, "ASSIGNED"),
+    (2, "EN CURSO"),
+    (3, "FINALIZADO")
+    ) 
     idService = models.AutoField(primary_key=True)
     idClientService = models.ForeignKey(Client, models.DO_NOTHING, db_column='idClient')
-    idDriverService = models.ForeignKey(Driver, models.DO_NOTHING, db_column='idDriver')
+    idDriverService = models.ForeignKey(Driver, models.DO_NOTHING, db_column='idDriver',blank=True, null=True)
     #startidLocation = models.ForeignKey(Location, models.DO_NOTHING, db_column='idLocation')
     endidLocation = models.ForeignKey(Location, models.DO_NOTHING, db_column='idLocation')
     idPaymentService = models.ForeignKey(Payment, models.DO_NOTHING, db_column='idPayment')
@@ -165,7 +171,7 @@ class Service(models.Model):
     startDate = models.DateTimeField(blank=True, null=True)
     endDate = models.DateTimeField(blank=True, null=True)
     isReservationService = models.BooleanField(blank=True, null=True)
-    stateService = models.IntegerField(blank=True, null=True)
+    stateService = models.IntegerField(choices=states, default=0)
 
     
     def __str__(self):
