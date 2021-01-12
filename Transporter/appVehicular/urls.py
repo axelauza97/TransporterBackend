@@ -19,11 +19,18 @@ urlpatterns = [
 
     url(r'^login/', include('rest_social_auth.urls_token')),
 
+    url(r'^socialauth$', GetUserSocial.as_view()),
+
+    url(r'^card$', Card.as_view(), name='card'),
+    url(r'^transaction$', Transaction.as_view(), name='transaction'),
+
     url(r'^devices?$', FCMDeviceAuthorizedViewSet.as_view({'post': 'create'}), name='create_fcm_device'),
-    url(r'^devices/delete(?P<user>[0-9]+)/$',DeleteFCMDevice.as_view(), name ='delete_fcm_device'),
+    url(r'^devices/delete/(?P<user>[0-9]+)/$',DeleteFCMDevice.as_view(), name ='delete_fcm_device'),
     url(r'^notification/$',NotificationFCM.as_view(), name ='NotificationFCM'),
 
     url(r'^acceptService/(?P<pk>[0-9]+)/(?P<driver>[0-9]+)/$',AcceptService.as_view(), name ='AcceptService'),
+    url(r'^endService/(?P<pk>[0-9]+)/(?P<driver>[0-9]+)/$',EndService.as_view(), name ='EndService'),
+
     url(r'^recordService/(?P<pk>[0-9]+)/(?P<typee>[0-9]+)/$',RecordService.as_view(), name ='RecordService'),
 
     url(r'user/create/$',CreateUser.as_view()),

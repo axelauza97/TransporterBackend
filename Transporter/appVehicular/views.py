@@ -21,15 +21,95 @@ from fcm_django.fcm import fcm_send_topic_message
 from fcm_django.models import FCMDevice
 import json
 from django.db import transaction
-
 from django.http import JsonResponse
 
+from .paymentez import Paymentez
+from oauth2_provider.models import AccessToken
 
-"""obtener pk de client y driver por user"""
+
+class GetUserSocial(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, *args, **kwargs):
+        token = self.request.query_params.get('token')
+        #token = "NOqim24m7PTNeF9h4fmBJTCEnAuP3t"
+        user=AccessToken.objects.get(token=token).user
+        return Response({
+            'id':user.id,
+            'isAdmin': user.is_superuser,
+            'username':user.username,
+            'first_name':user.first_name,
+            'last_name':user.last_name,
+            'email':user.email,
+        })  
 
 
+class Card(APIView):
+    permission_classes = (AllowAny,)
+    def get(self, request, *args, **kwargs):
+        user = self.request.query_params.get('user')
+        print(user)
+        card=Paymentez()
+        return JsonResponse(card.list_cards(user), safe=False)  
+        
+    def post(self, request, *args, **kwargs):
+        form = AddCardForm(request.POST)
+        if form.is_valid():
+            card=Paymentez()
+            dato = {
+            'user': {
+                'id': form.cleaned_data["userId"],
+                'email': form.cleaned_data["email"]
+                }, 
+            'card': {
+                'number': form.cleaned_data["cardNumber"],
+                'holder_name': form.cleaned_data["holderName"],
+                'expiry_month': form.cleaned_data["expiryMonth"],
+                'expiry_year': form.cleaned_data["expiryYear"],
+                'cvc': form.cleaned_data["cvc"]
+                }
+            }
+            print(dato)
+            return JsonResponse(card.add_card(dato), safe=False)  
+        return Response({"Server Error"})
 
-class CustomAuthToken(ObtainAuthToken):
+    def delete(self, request, *args, **kwargs):
+        user = self.request.query_params.get('user')
+        token = self.request.query_params.get('token')
+        card=Paymentez()
+        return JsonResponse(card.remove_card(token,user), safe=False)        
+
+class Transaction(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        form = TransactionForm(request.POST)
+        if form.is_valid():
+            user = self.request.query_params.get('user')
+            token = self.request.query_params.get('token')
+            #userBack = User.objects.get(pk=user)
+            card=Paymentez()
+            dato = {
+            'user': {
+                'id': user,
+                'email': "asa@gmail.com"
+                #'email': userBack.email
+                }, 
+            'order': {
+                'amount': form.cleaned_data["amount"],
+                'description': form.cleaned_data["description"],
+                'dev_reference': form.cleaned_data["dev_reference"],
+                'vat': form.cleaned_data["vat"],
+                'taxable_amount':0,
+                'tax_percentage':0
+                },
+            'card': {
+                'token': token
+                }
+            }
+            print(dato)
+            return JsonResponse(card.pay_card(dato), safe=False)  
+        return Response({"Server Error"})
+
+class CustomAuthToken(ObtainAuthToken):        
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(data=request.data,
                                            context={'request': request})
@@ -102,6 +182,33 @@ class AcceptService(APIView):
                 return Response({'Servicio assignado'})
             else:
                 return Response({'Servicio ya fue assignado'})
+        else:
+            return Response({'Error'})
+
+class EndService(APIView):
+    permission_classes = (AllowAny,)
+    @transaction.atomic
+    def post(self, request, *args, **kwargs):
+        form = AcceptServiceForm(request.POST)
+        if form.is_valid():
+            servicePk=form.cleaned_data['service']
+            user_driverPk=form.cleaned_data['driver']
+            user_clientPk=form.cleaned_data['client']
+            data = eval(form.cleaned_data['data'])
+            service=Service.objects.get(pk=servicePk) 
+            if service.stateService==2:
+                device = FCMDevice.objects.get(user=user_clientPk)
+                service.stateService=3
+                driverPk=User.objects.get(pk=user_driverPk)
+                driver=Driver.objects.get(userDriver=driverPk)      
+                service.idDriverService=driver
+                service.save()
+                device.send_message(title="Atencion", body="Servicio Finalizado",data=data)
+                device.is_active=True
+                device.save()
+                return Response({'Servicio Finalizado'})
+            else:
+                return Response({'Servicio ya fue finalizado'})
         else:
             return Response({'Error'})
 
