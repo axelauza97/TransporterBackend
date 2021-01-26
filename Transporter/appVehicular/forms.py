@@ -27,8 +27,8 @@ class AddCardForm(forms.Form):
     cvc = forms.CharField(max_length=100)
 
 class TransactionForm(forms.Form):
-    amount = forms.FloatField()
+    amount = forms.CharField(max_length=100)
     description = forms.CharField(max_length=250)
     dev_reference = forms.CharField(max_length=100)
-    vat = forms.FloatField()
+    vat = forms.CharField(max_length=100)
     

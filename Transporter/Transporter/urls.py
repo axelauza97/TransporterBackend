@@ -15,6 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
+from django.contrib.auth import views as auth_views
+
 
 from rest_framework_swagger.views import get_swagger_view
 schema_view = get_swagger_view(title='Transporter API')
@@ -24,6 +26,11 @@ urlpatterns = [
     path('api/', include('appVehicular.urls')),
     path('docs/', schema_view),
     path('auth/', include('rest_framework_social_oauth2.urls')),
+    #path('/', include('django.contrib.auth.urls')),
+    path('reset/password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html', email_template_name='registration/password_reset_email.html'), name="password_reset"),
+    path('reset/password_reset_done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name="password_reset_done"),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name="password_reset_confirm"),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name="password_reset_complete"),
 
     #path('social-auth/', include('social_django.urls', namespace='social'))
     

@@ -30,6 +30,7 @@ ALLOWED_HOSTS = ['*'] #acepte todos los dominios
 # Application definition
 
 INSTALLED_APPS = [
+    'appVehicular',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -38,13 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'rest_framework.authtoken',
-    'appVehicular',
+    
     'fcm_django',
     'oauth2_provider',
     'social_django',
     'rest_framework_social_oauth2',
     'rest_social_auth',
     'corsheaders',
+    'django_filters',
     #'rest_framework_swagger',
 ]
 
@@ -182,6 +184,8 @@ REST_FRAMEWORK = {
         'oauth2_provider.contrib.rest_framework.OAuth2Authentication',  # django-oauth-toolkit >= 1.0.0
         'rest_framework_social_oauth2.authentication.SocialAuthentication',
     ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
+
 }
 
 #REST_FRAMEWORK = { 'DEFAULT_SCHEMA_CLASS': 'rest_framework.schemas.coreapi.AutoSchema' }
@@ -202,6 +206,14 @@ AUTHENTICATION_BACKENDS = (
 
 LOGOUT_REDIRECT_URL='http://localhost:8000/'
 REST_SOCIAL_DOMAIN_FROM_ORIGIN=False
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'ingenieria.software.desarrollo@gmail.com'
+EMAIL_HOST_PASSWORD = 'xzhreimlxulfwzfl'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+
 
 
 

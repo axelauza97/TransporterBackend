@@ -25,6 +25,7 @@ from django.http import JsonResponse
 
 from .paymentez import Paymentez
 from oauth2_provider.models import AccessToken
+from django_filters.rest_framework import DjangoFilterBackend
 
 
 class GetUserSocial(APIView):
@@ -94,10 +95,10 @@ class Transaction(APIView):
                 #'email': userBack.email
                 }, 
             'order': {
-                'amount': form.cleaned_data["amount"],
+                'amount': float(form.cleaned_data["amount"]),
                 'description': form.cleaned_data["description"],
                 'dev_reference': form.cleaned_data["dev_reference"],
-                'vat': form.cleaned_data["vat"],
+                'vat': float(form.cleaned_data["vat"]),
                 'taxable_amount':0,
                 'tax_percentage':0
                 },
@@ -185,6 +186,32 @@ class AcceptService(APIView):
         else:
             return Response({'Error'})
 
+class StartService(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        form = AcceptServiceForm(request.POST)
+        if form.is_valid():
+            servicePk=form.cleaned_data['service']
+            user_driverPk=form.cleaned_data['driver']
+            user_clientPk=form.cleaned_data['client']
+            data = eval(form.cleaned_data['data'])
+            service=Service.objects.get(pk=servicePk)
+            if service.stateService==1:
+                device = FCMDevice.objects.get(user=user_clientPk)
+                service.stateService=2
+                driverPk=User.objects.get(pk=user_driverPk)
+                driver=Driver.objects.get(userDriver=driverPk)
+                service.idDriverService=driver
+                service.save()
+                device.send_message(title="Atencion", body="Servicio en Curso",data=data)
+                device.is_active=True
+                device.save()
+                return Response({'Servicio comenzado'})
+            else:
+                return Response({'Servicio ya ha sido comenzado'})
+        else:
+            return Response({'Error'})
+            
 class EndService(APIView):
     permission_classes = (AllowAny,)
     @transaction.atomic
@@ -209,6 +236,20 @@ class EndService(APIView):
                 return Response({'Servicio Finalizado'})
             else:
                 return Response({'Servicio ya fue finalizado'})
+        else:
+            return Response({'Error'})
+
+class CancelService(APIView):
+    permission_classes = (AllowAny,)
+    def post(self, request, *args, **kwargs):
+        servicePk = kwargs.get('pk', 0)
+        if servicePk!=0:
+            service=Service.objects.get(pk=servicePk)
+            if service.stateService!=4:
+                service.stateService=4
+                return Response({'Servicio Cancelado'})
+            else:
+                return Response({'Servicio ya fue cancelado'})
         else:
             return Response({'Error'})
 
@@ -313,85 +354,38 @@ class ChangePasswordView(generics.UpdateAPIView):
                 return Response(response)
 
 
-
-#get, post
-class CompanyList(generics.ListCreateAPIView):
-    permission_classes = (IsAuthenticated,)
+class CompanyView(viewsets.ModelViewSet):
     queryset = Company.objects.all()
-    serializer_class = CompanySerializer
+    serializer_class = Company
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset,
-            pk = self.kwargs['pk'],
-        )
-        return obj
-
-#update, delete
-class CompanyDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = (IsAuthenticated,)
-    queryset = Company.objects.all()
-    serializer_class = CompanySerializer
-
-
-#get, post
-class DriverList(generics.ListCreateAPIView):
+class DriverView(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
-    serializer_class = DriverSerializer
+    serializer_class = Driver
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset,
-            pk = self.kwargs['pk'],
-        )
-        return obj
+class TypeServiceView(viewsets.ModelViewSet):
+    queryset = TypeService.objects.all()
+    serializer_class = TypeService
 
-#update, delete
-class DriverDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Driver.objects.all()
-    serializer_class = DriverSerializer
-
-class VehicleList(generics.ListCreateAPIView):
+class VehicleView(viewsets.ModelViewSet):
     queryset = Vehicle.objects.all()
-    serializer_class = VehicleSerializer
+    serializer_class = Vehicle
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset,
-            pk = self.kwargs['pk'],
-        )
-        return obj
-
-#update, delete
-class VehicleDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Vehicle.objects.all()
-    serializer_class = VehicleSerializer
-
-#get, post
-class ClientList(generics.ListCreateAPIView):
+class ClientView(viewsets.ModelViewSet):
     queryset = Client.objects.all()
-    serializer_class = ClientSerializer
+    serializer_class = Client
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset,
-            pk = self.kwargs['pk'],
-        )
-        return obj
-
-#update, delete
-class ClientDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Client.objects.all()
-    serializer_class = ClientSerializer
-
+class FareView(viewsets.ModelViewSet):
+    queryset = Fare.objects.all()
+    serializer_class = Fare
 
 class ServiceView(viewsets.ModelViewSet):
+    permission_classes = (AllowAny,)
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = '__all__'
+    ordering_fields = '__all__'
+
 
     def perform_create(self, request):
         service=self.get_serializer(data=request.data)
@@ -399,42 +393,9 @@ class ServiceView(viewsets.ModelViewSet):
             new_service=service.save()
             dictService=request.data
             dictService['pk']=new_service.pk
+            print(dictService)
             notify(title="Atencion",body="Nuevo Servicio",user="0",data=dictService)
 
-#get, post
-class TypeServiceList(generics.ListCreateAPIView):
-    queryset = TypeService.objects.all()
-    serializer_class = TypeServiceSerializer
 
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset,
-            pk = self.kwargs['pk'],
-        )
-        return obj
-
-#update, delete
-class TypeServiceDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = TypeService.objects.all()
-    serializer_class = TypeServiceSerializer
-
-#get, post
-class FareList(generics.ListCreateAPIView):
-    queryset = Fare.objects.all()
-    serializer_class = FareSerializer
-
-    def get_object(self):
-        queryset = self.get_queryset()
-        obj = get_object_or_404(
-            queryset,
-            pk = self.kwargs['pk'],
-        )
-        return obj
-
-#update, delete
-class FareDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Fare.objects.all()
-    serializer_class = FareSerializer
 
 

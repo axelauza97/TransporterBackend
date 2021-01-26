@@ -19,9 +19,13 @@ class Company(models.Model):
 
 class User(AbstractUser):
     company = models.ForeignKey(Company, blank=True, null=True, on_delete=models.CASCADE)
-    image = models.FileField(blank=True, null=True, upload_to='profiles')
+    email = models.EmailField(blank=False,unique=True)
+    cedula = models.CharField(unique=True, max_length=10, null=True)
+    #image = models.FileField(blank=True, null=True, upload_to='profiles')
+    username = models.CharField(max_length=45, blank=True, null=True)
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = []
+    REQUIRED_FIELDS = ['username']
+
     
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
@@ -159,7 +163,8 @@ class Service(models.Model):
     (0, "UNASSIGNED"), 
     (1, "ASSIGNED"),
     (2, "EN CURSO"),
-    (3, "FINALIZADO")
+    (3, "FINALIZADO"),
+    (4, "CANCELED")
     ) 
     idService = models.AutoField(primary_key=True)
     idClientService = models.ForeignKey(Client, models.DO_NOTHING, db_column='idClient')

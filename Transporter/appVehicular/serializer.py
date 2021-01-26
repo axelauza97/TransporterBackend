@@ -8,27 +8,28 @@ class CompanySerializer(serializers.ModelSerializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
-
+    password = serializers.CharField(write_only=True)
     def create(self, validated_data):
-        user = User.objects.create(**validated_data)
+        user = User.objects.create(
+            cedula = validated_data['cedula'],
+            email = validated_data['email'],
+            )
         user.set_password(validated_data['password'])
         user.save()
         return user
+    
 
     class Meta:
         model = User
         fields = (
             'id',
-            'username',
+            'cedula',
             'password',
             'email',
             'first_name',
             'last_name',
             'is_active',
         )
-        extra_kwargs = {
-            'username': {'validators': []},
-        }
 
 
 class ChangePasswordSerializer(serializers.Serializer):

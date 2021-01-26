@@ -12,6 +12,12 @@ from rest_framework.routers import DefaultRouter
 
 router=DefaultRouter()
 router.register(r'service',views.ServiceView,basename='service')
+router.register(r'company',views.CompanyView,basename='company')
+router.register(r'driver',views.DriverView,basename='driver')
+router.register(r'vehicle',views.VehicleView,basename='vehicle')
+router.register(r'client',views.ClientView,basename='client')
+router.register(r'typeservice',views.TypeServiceView,basename='typeservice')
+router.register(r'fare',views.FareView,basename='fare')
     
 urlpatterns = [
     url(r'',include(router.urls)),
@@ -28,9 +34,10 @@ urlpatterns = [
     url(r'^devices/delete/(?P<user>[0-9]+)/$',DeleteFCMDevice.as_view(), name ='delete_fcm_device'),
     url(r'^notification/$',NotificationFCM.as_view(), name ='NotificationFCM'),
 
-    url(r'^acceptService/(?P<pk>[0-9]+)/(?P<driver>[0-9]+)/$',AcceptService.as_view(), name ='AcceptService'),
-    url(r'^endService/(?P<pk>[0-9]+)/(?P<driver>[0-9]+)/$',EndService.as_view(), name ='EndService'),
-
+    url(r'^acceptService/$',AcceptService.as_view(), name ='AcceptService'),
+    url(r'^startService/$',StartService.as_view(), name ='StartService'),
+    url(r'^endService/$',EndService.as_view(), name ='EndService'),
+    url(r'^cancelService(?P<pk>[0-9]+)/$',CancelService.as_view(), name ='CancelService'),
     url(r'^recordService/(?P<pk>[0-9]+)/(?P<typee>[0-9]+)/$',RecordService.as_view(), name ='RecordService'),
 
     url(r'user/create/$',CreateUser.as_view()),
@@ -40,26 +47,7 @@ urlpatterns = [
 
     url(r'user/(?P<pk>[0-9]+)/$', GetUser.as_view()),
     url(r'user/delete/(?P<pk>[0-9]+)/$', DeleteUser.as_view()),
-
-    url(r'^company/$', CompanyList.as_view(), name ='company'),
-    url(r'^company/(?P<pk>[0-9]+)/$', CompanyDetail.as_view()),
-
-    url(r'^driver/$',DriverList.as_view(), name ='driver'),
-    url(r'^driver/(?P<pk>[0-9]+)/$', DriverDetail.as_view()),
     
     url(r'^getpk/(?P<user>[0-9]+)/(?P<typee>[0-9]+)/$', GetPk.as_view()),
-
-    url(r'^vehicle/$',VehicleList.as_view(), name ='vehicle'),
-    url(r'^vehicle/(?P<pk>[0-9]+)/$', VehicleDetail.as_view()),
-
-    url(r'^client/$',ClientList.as_view(), name ='client'),
-    url(r'^client/(?P<pk>[0-9]+)/$', ClientDetail.as_view()),
-
-    
-    url(r'^typeservice/$',TypeServiceList.as_view(), name ='typeservice'),
-    url(r'^typeservice/(?P<pk>[0-9]+)/$', TypeServiceDetail.as_view()),
-
-    url(r'^fare/$',FareList.as_view(), name ='fare'),
-    url(r'^fare/(?P<pk>[0-9]+)/$', FareDetail.as_view()),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
