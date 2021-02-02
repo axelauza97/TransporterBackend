@@ -22,13 +22,13 @@ class AddCardForm(forms.Form):
     email = forms.CharField(max_length=100)
     cardNumber = forms.CharField(max_length=100)
     holderName = forms.CharField(max_length=100)
-    expiryMonth = forms.IntegerField()
-    expiryYear = forms.IntegerField()
+    expiryMonth = forms.CharField(max_length=100)
+    expiryYear = forms.CharField(max_length=100)
     cvc = forms.CharField(max_length=100)
 
 class TransactionForm(forms.Form):
-    amount = forms.CharField(max_length=100)
+    amount = forms.CharField(max_length=7)
     description = forms.CharField(max_length=250)
     dev_reference = forms.CharField(max_length=100)
-    vat = forms.CharField(max_length=100)
+    vat = forms.CharField(max_length=7)
     

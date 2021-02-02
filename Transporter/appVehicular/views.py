@@ -27,13 +27,14 @@ from .paymentez import Paymentez
 from oauth2_provider.models import AccessToken
 from django_filters.rest_framework import DjangoFilterBackend
 
-
+#cambiar token bearer por token django
 class GetUserSocial(APIView):
     permission_classes = (AllowAny,)
     def get(self, request, *args, **kwargs):
         token = self.request.query_params.get('token')
         #token = "NOqim24m7PTNeF9h4fmBJTCEnAuP3t"
         user=AccessToken.objects.get(token=token).user
+        token, created=Token.objects.get_or_create(user=user)
         return Response({
             'id':user.id,
             'isAdmin': user.is_superuser,
@@ -41,6 +42,7 @@ class GetUserSocial(APIView):
             'first_name':user.first_name,
             'last_name':user.last_name,
             'email':user.email,
+            'token':token.key
         })  
 
 
@@ -64,8 +66,8 @@ class Card(APIView):
             'card': {
                 'number': form.cleaned_data["cardNumber"],
                 'holder_name': form.cleaned_data["holderName"],
-                'expiry_month': form.cleaned_data["expiryMonth"],
-                'expiry_year': form.cleaned_data["expiryYear"],
+                'expiry_month': int(form.cleaned_data["expiryMonth"]),
+                'expiry_year': int(form.cleaned_data["expiryYear"]),
                 'cvc': form.cleaned_data["cvc"]
                 }
             }
@@ -86,13 +88,12 @@ class Transaction(APIView):
         if form.is_valid():
             user = self.request.query_params.get('user')
             token = self.request.query_params.get('token')
-            #userBack = User.objects.get(pk=user)
+            userBack = User.objects.get(pk=user)
             card=Paymentez()
             dato = {
             'user': {
                 'id': user,
-                'email': "asa@gmail.com"
-                #'email': userBack.email
+                'email': userBack.email
                 }, 
             'order': {
                 'amount': float(form.cleaned_data["amount"]),
@@ -356,27 +357,27 @@ class ChangePasswordView(generics.UpdateAPIView):
 
 class CompanyView(viewsets.ModelViewSet):
     queryset = Company.objects.all()
-    serializer_class = Company
+    serializer_class = CompanySerializer
 
 class DriverView(viewsets.ModelViewSet):
     queryset = Driver.objects.all()
-    serializer_class = Driver
+    serializer_class = DriverSerializer
 
 class TypeServiceView(viewsets.ModelViewSet):
     queryset = TypeService.objects.all()
-    serializer_class = TypeService
+    serializer_class = TypeServiceSerializer
 
 class VehicleView(viewsets.ModelViewSet):
     queryset = Vehicle.objects.all()
-    serializer_class = Vehicle
+    serializer_class = VehicleSerializer
 
 class ClientView(viewsets.ModelViewSet):
     queryset = Client.objects.all()
-    serializer_class = Client
+    serializer_class = ClientSerializer
 
 class FareView(viewsets.ModelViewSet):
     queryset = Fare.objects.all()
-    serializer_class = Fare
+    serializer_class = FareSerializer
 
 class ServiceView(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
@@ -396,6 +397,10 @@ class ServiceView(viewsets.ModelViewSet):
             print(dictService)
             notify(title="Atencion",body="Nuevo Servicio",user="0",data=dictService)
 
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ServiceSerializerShow
+        return ServiceSerializer
 
 
 

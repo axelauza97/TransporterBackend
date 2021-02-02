@@ -1,0 +1,49 @@
+[{
+        "model": "appVehicular.TypeService",
+        "pk": 1,
+        "fields": {
+            "nameTypeService": "Carro",
+            "descriptionTypeService": "Privada"
+        }
+    },
+    {
+        "model": "appVehicular.TypeService",
+        "pk": 2,
+        "fields": {
+            "nameTypeService": "Camioneta",
+            "descriptionTypeService": "Privada"
+        }
+    },
+    {
+        "model": "appVehicular.TypeService",
+        "pk": 3,
+        "fields": {
+            "nameTypeService": "Plataforma",
+            "descriptionTypeService": "Privada"
+        }
+    },
+    {
+        "model": "appVehicular.TypeService",
+        "pk": 4,
+        "fields": {
+            "nameTypeService": "Camion",
+            "descriptionTypeService": "Privada"
+        }
+    },
+    {
+        "model": "appVehicular.TypeService",
+        "pk": 5,
+        "fields": {
+            "nameTypeService": "Furgon",
+            "descriptionTypeService": "Privada"
+        }
+    },
+    {
+        "model": "appVehicular.TypeService",
+        "pk": 6,
+        "fields": {
+            "nameTypeService": "Remolque",
+            "descriptionTypeService": "Privada"
+        }
+    }
+]

@@ -1,0 +1,26 @@
+[{
+        "model": "appVehicular.Payment",
+        "pk": 1,
+        "fields": {
+            "nameTypeService": "Efectivo",
+            "descriptionTypeService": "Pago en efectivo"
+        }
+    },
+
+    {
+        "model": "appVehicular.Payment",
+        "pk": 2,
+        "fields": {
+            "nameTypeService": "Credito",
+            "descriptionTypeService": "Pública"
+        }
+    },
+    {
+        "model": "appVehicular.Payment",
+        "pk": 3,
+        "fields": {
+            "nameTypeService": "Debito",
+            "descriptionTypeService": "Pública"
+        }
+    }
+]

@@ -54,3 +54,4 @@ recibe token de aplicacion de una red social
 token--> Authorization : Token <token>
   
 pip install django-filter
+python manage.py loaddata fixtures/*.json

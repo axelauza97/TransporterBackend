@@ -1,0 +1,57 @@
+[{
+        "model": "appVehicular.Fare",
+        "pk": 1,
+        "fields": {
+            "idTypeServiceFare": 1,
+            "minFare": 1.00,
+            "priceFare": 0.50
+        }
+    },
+
+    {
+        "model": "appVehicular.Fare",
+        "pk": 2,
+        "fields": {
+            "idTypeServiceFare": 2,
+            "minFare": 11.00,
+            "priceFare": 1.00
+        }
+    },
+    {
+        "model": "appVehicular.Fare",
+        "pk": 3,
+        "fields": {
+            "idTypeServiceFare": 3,
+            "minFare": 12.00,
+            "priceFare": 1.50
+        }
+    },
+    {
+        "model": "appVehicular.Fare",
+        "pk": 4,
+        "fields": {
+            "idTypeServiceFare": 4,
+            "minFare": 12.00,
+            "priceFare": 1.50
+        }
+    },
+    {
+        "model": "appVehicular.Fare",
+        "pk": 5,
+        "fields": {
+            "idTypeServiceFare": 5,
+            "minFare": 12.00,
+            "priceFare": 1.50
+        }
+    },
+    {
+        "model": "appVehicular.Fare",
+        "pk": 6,
+        "fields": {
+            "idTypeServiceFare": 6,
+            "minFare": 12.00,
+            "priceFare": 1.50
+        }
+    }
+
+]

@@ -13,6 +13,10 @@ class UserSerializer(serializers.ModelSerializer):
         user = User.objects.create(
             cedula = validated_data['cedula'],
             email = validated_data['email'],
+            celular = validated_data['celular'],
+            image = validated_data['image'],
+            first_name = validated_data['first_name'],
+            last_name = validated_data['last_name'],
             )
         user.set_password(validated_data['password'])
         user.save()
@@ -26,6 +30,9 @@ class UserSerializer(serializers.ModelSerializer):
             'cedula',
             'password',
             'email',
+            'celular',
+            'email',
+            'image',
             'first_name',
             'last_name',
             'is_active',
@@ -81,20 +88,17 @@ class PaymentSerializer(serializers.ModelSerializer):
         model = Payment
         fields = '__all__'
 
-class LocationSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Location
-        fields = '__all__'
-
 class ServiceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Service
         fields = '__all__'
 
-class LocationSerializer(serializers.ModelSerializer):
+class ServiceSerializerShow(serializers.ModelSerializer):
     class Meta:
-        model = Location
+        model = Service
         fields = '__all__'
+        depth = 1
+
 
 class DetailsSerializer(serializers.ModelSerializer):
     class Meta:

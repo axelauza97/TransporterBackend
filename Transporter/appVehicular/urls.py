@@ -25,7 +25,7 @@ urlpatterns = [
 
     url(r'^login/', include('rest_social_auth.urls_token')),
 
-    url(r'^socialauth$', GetUserSocial.as_view()),
+    url(r'^socialauth/$', GetUserSocial.as_view()),
 
     url(r'^card$', Card.as_view(), name='card'),
     url(r'^transaction$', Transaction.as_view(), name='transaction'),

@@ -21,7 +21,9 @@ class User(AbstractUser):
     company = models.ForeignKey(Company, blank=True, null=True, on_delete=models.CASCADE)
     email = models.EmailField(blank=False,unique=True)
     cedula = models.CharField(unique=True, max_length=10, null=True)
+    celular = models.CharField(max_length=10, null=True)
     #image = models.FileField(blank=True, null=True, upload_to='profiles')
+    image = models.CharField(max_length=255, null=True)
     username = models.CharField(max_length=45, blank=True, null=True)
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ['username']
@@ -51,25 +53,22 @@ class Suggestion(models.Model):
     email = models.CharField(max_length=255)
     comment = models.CharField(max_length=255)
     atendido = models.BooleanField()
+    image = models.CharField(max_length=255, null=True)
+    tipo = models.BooleanField(blank=True, null=True)
     
 class Driver(models.Model):
     idDriver = models.AutoField(primary_key=True)
     userDriver = models.OneToOneField(User, on_delete=models.CASCADE, null=True)
-    emailDriver = models.CharField(max_length=100, blank=True, null=True)
     companyDriver = models.ForeignKey(Company, models.DO_NOTHING, db_column='idCompany',null=True)
-    ciDriver = models.CharField(max_length=10, blank=True, null=True)
-    nameDriver = models.CharField(max_length=30, blank=True, null=True)
-    lnameDriver = models.CharField(max_length=30, blank=True, null=True)
     birthdateDriver = models.DateTimeField(blank=True, null=True)
     sexDriver = models.CharField(max_length=10, blank=True, null=True)
     addressDriver = models.CharField(max_length=100, blank=True, null=True)
-    phoneDriver = models.CharField(max_length=10, blank=True, null=True)
     cipictureDriver = models.CharField(max_length=1000, blank=True, null=True) # cedula foto
     licenceDriver = models.CharField(max_length=1000, blank=True, null=True) #licencia foto
     rateDriver = models.IntegerField(blank=True, null=True)
     stateDriver = models.BooleanField(default=False) # habilitado inhabilitado
     activeDriver = models.BooleanField(default=False) # REgistrar en el sistema
-
+    #old vehicleDriver
     class Meta:
         db_table = 'drive'
         managed = True
@@ -89,6 +88,7 @@ class TypeService(models.Model):
     def __str__(self):
        return '%s: %s %s' % (self.idTypeService, self.nameTypeService, self.descriptionTypeService)
 
+#Mejora futura que se pueda selc lista vehiculos
 class Vehicle(models.Model):
     idVehicle = models.AutoField(primary_key=True)
     userVehicle = models.ForeignKey(Driver, models.DO_NOTHING, db_column='idDriver',null=True)
@@ -102,7 +102,7 @@ class Vehicle(models.Model):
     pictureVehicle = models.CharField(max_length=1000, blank=True, null=True) #vehiculo foto
     typeServiceVehicle = models.ForeignKey(TypeService, models.DO_NOTHING, db_column='idTypeService',null=True)
     typeVehicle = models.CharField(max_length=45, blank=True, null=True)
-
+    #Old brandVehicle,typeVehicle,modelVehicle,colorVehicle
     class Meta:
         db_table = 'vehicle'
         managed = True
@@ -115,48 +115,29 @@ class Vehicle(models.Model):
 class Client(models.Model):
     idClient = models.AutoField(primary_key=True)
     userClient = models.OneToOneField(User, on_delete=models.CASCADE)
-    rateClient = models.IntegerField(blank=True, null=True)
-
     
     def __str__(self):
        return '%s: %s %s' % (self.idClient, self.userClient, self.rateClient)
 
 class Fare(models.Model):
     idFare = models.AutoField(primary_key=True)
-    idCompanyFare = models.ForeignKey(Company, models.DO_NOTHING, db_column='idCompany')
+    idCompanyFare = models.ForeignKey(Company, models.DO_NOTHING, db_column='idCompany',null=True)
     idTypeServiceFare = models.ForeignKey(TypeService, models.DO_NOTHING, db_column='idTypeService')
-    maxFare = models.IntegerField(blank=True, null=True)
+    minFare = models.FloatField(blank=True, null=True)
     priceFare = models.FloatField(blank=True, null=True)
 
     
     def __str__(self):
-       return '%s: %s %s %s %s' % (self.idFare, self.idCompanyFare, self.idTypeServiceFare, self.maxFare, self.priceFare)
+       return '%s: %s %s %s %s' % (self.idFare, self.idCompanyFare, self.idTypeServiceFare, self.minFare, self.priceFare)
 
 class Payment(models.Model):
     idPayment = models.AutoField(primary_key=True)
-    idFarePayment = models.ForeignKey(Fare, models.DO_NOTHING, db_column='idFare')
-    typePayment = models.CharField(max_length=45, blank=True, null=True)
-    amountPayment = models.FloatField(blank=True, null=True)
-    driverneedPayment = models.FloatField(blank=True, null=True)
-    chargeamountPayment = models.FloatField(blank=True, null=True)
-    totalPayment = models.FloatField(blank=True, null=True)
-    datePayment = models.DateTimeField(blank=True, null=True)
-    tokenPayment = models.CharField(max_length=200, blank=True, null=True)
-
+    nameTypeService = models.CharField(max_length=45, blank=True, null=True)
+    descriptionTypeService = models.CharField(max_length=200, blank=True, null=True)
     
     def __str__(self):
-        return str(self.amountPayment)
+        return str(self.nameTypeService)
 
-class Location(models.Model):
-    idLocation = models.AutoField(primary_key=True)
-    latitudeLocation = models.CharField(max_length=20, blank=True, null=True)
-    longitudeLocation = models.CharField(max_length=20, blank=True, null=True)
-    nameLocation = models.CharField(max_length=200, blank=True, null=True)
-    tokenLocation = models.CharField(max_length=200, blank=True, null=True)
-
-    
-    def __str__(self):
-       return '%s: %s %s %s %s' % (self.idLocation, self.latitudeLocation, self.longitudeLocation, self.nameLocation, self.tokenLocation)
 
 class Service(models.Model):
     states =( 
@@ -169,9 +150,14 @@ class Service(models.Model):
     idService = models.AutoField(primary_key=True)
     idClientService = models.ForeignKey(Client, models.DO_NOTHING, db_column='idClient')
     idDriverService = models.ForeignKey(Driver, models.DO_NOTHING, db_column='idDriver',blank=True, null=True)
-    #startidLocation = models.ForeignKey(Location, models.DO_NOTHING, db_column='idLocation')
-    endidLocation = models.ForeignKey(Location, models.DO_NOTHING, db_column='idLocation')
-    idPaymentService = models.ForeignKey(Payment, models.DO_NOTHING, db_column='idPayment')
+    #coordenada
+    coordStart = models.CharField(max_length=200, blank=True, null=True)
+    coordEnd = models.CharField(max_length=200, blank=True, null=True)
+    #nombre
+    startAddress=models.CharField(max_length=200, blank=True, null=True)
+    endAddress=models.CharField(max_length=200, blank=True, null=True)
+    
+    idTypePaymentService = models.ForeignKey(Payment, models.DO_NOTHING, db_column='idPayment')
     idTypeService = models.ForeignKey(TypeService, models.DO_NOTHING, db_column='idTypeService')
     driverScore = models.IntegerField(blank=True, null=True)
     clientScore = models.IntegerField(blank=True, null=True)
@@ -179,10 +165,12 @@ class Service(models.Model):
     endDate = models.DateTimeField(blank=True, null=True)
     isReservationService = models.BooleanField(blank=True, null=True)
     stateService = models.IntegerField(choices=states, default=0)
+    amountPayment = models.FloatField(blank=True, null=True)
+    tokenPayment = models.CharField(max_length=200, blank=True, null=True)
 
     
     def __str__(self):
-       return '%s: %s %s %s' % (self.idService, self.endidLocation, self.startDate, self.endDate)
+       return '%s: %s %s' % (self.idService, self.startDate, self.endDate)
 
 
 class Details(models.Model):
@@ -190,16 +178,3 @@ class Details(models.Model):
     user = models.OneToOneField(User, blank=True, on_delete=models.CASCADE)
     description = models.CharField(max_length=25)
     
-class Police(models.Model):
-    idPolice = models.AutoField(primary_key=True)
-    companyPolice = models.ForeignKey(Company, models.DO_NOTHING, db_column='idCompany',null=True)
-    descriptionPolice = models.TextField(blank=True, null=True)
-    typePolice = models.CharField(max_length=200, blank=True, null=True)
-
-    class Meta:
-        db_table = 'police'
-        managed = True
-
-    def __str__(self):
-       return '%s: %s %s %s' % (self.idPolice, self.companyPolice,
-       self.descriptionPolice, self.typePolice)
