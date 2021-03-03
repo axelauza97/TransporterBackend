@@ -3,7 +3,7 @@ from rest_framework import generics
 from .models import *
 from .serializer import *
 from .forms import *
-from rest_framework.permissions import AllowAny,IsAuthenticated
+from rest_framework.permissions import AllowAny,IsAuthenticated,IsAdminUser
 from rest_framework import permissions
 from django.views.generic import TemplateView
 from django.template.loader import render_to_string
@@ -26,6 +26,8 @@ from django.http import JsonResponse
 from .paymentez import Paymentez
 from oauth2_provider.models import AccessToken
 from django_filters.rest_framework import DjangoFilterBackend
+from .permissions import *
+
 
 #cambiar token bearer por token django
 class GetUserSocial(APIView):
@@ -37,11 +39,15 @@ class GetUserSocial(APIView):
         token, created=Token.objects.get_or_create(user=user)
         return Response({
             'id':user.id,
+            'uid':user.uid,
+            'cedula':user.cedula,
+            'email':user.email,
+            'celular':user.celular,
+            'image':user.image,
             'isAdmin': user.is_superuser,
             'username':user.username,
             'first_name':user.first_name,
             'last_name':user.last_name,
-            'email':user.email,
             'token':token.key
         })  
 
@@ -119,13 +125,17 @@ class CustomAuthToken(ObtainAuthToken):
         user = serializer.validated_data['user']
         token, created = Token.objects.get_or_create(user=user)
         return Response({
-            'token': token.key,
             'id':user.id,
+            'uid':user.uid,
+            'cedula':user.cedula,
+            'email':user.email,
+            'celular':user.celular,
+            'image':user.image,
             'isAdmin': user.is_superuser,
             'username':user.username,
             'first_name':user.first_name,
             'last_name':user.last_name,
-            'email':user.email,
+            'token':token.key
         })
 
 
@@ -174,8 +184,9 @@ class AcceptService(APIView):
             if service.stateService==0:
                 device = FCMDevice.objects.get(user=user_clientPk)
                 service.stateService=1
-                driverPk=User.objects.get(pk=user_driverPk)
-                driver=Driver.objects.get(userDriver=driverPk)      
+                #driverPk=User.objects.get(pk=user_driverPk)
+                #driver=Driver.objects.get(userDriver=driverPk)      
+                driver=Driver.objects.get(userDriver=user_driverPk)
                 service.idDriverService=driver
                 service.save()
                 device.send_message(title="Atencion", body="Servicio Assignado",data=data)
@@ -360,6 +371,7 @@ class CompanyView(viewsets.ModelViewSet):
     serializer_class = CompanySerializer
 
 class DriverView(viewsets.ModelViewSet):
+    permission_classes = [IsOwner,WriteOnly,IsAdminUser,]
     queryset = Driver.objects.all()
     serializer_class = DriverSerializer
 
@@ -372,15 +384,32 @@ class VehicleView(viewsets.ModelViewSet):
     serializer_class = VehicleSerializer
 
 class ClientView(viewsets.ModelViewSet):
+    permission_classes = [IsOwner,WriteOnly,IsAdminUser,]
     queryset = Client.objects.all()
     serializer_class = ClientSerializer
+
+    def retrieve(self, request, pk=None):
+        client=Client.objects.get(pk=pk)
+        dictClient={}
+        dictClient["idClient"]=client.pk
+        dictClient["userClient"]=client.userClient.pk
+        dictClient["uid"]=User.objects.get(pk=client.userClient.pk).uid
+
+        return JsonResponse(dictClient)
+
+    def get_serializer_class(self):
+        if self.action == 'list':
+            return ClientSerializerShow
+        return ClientSerializer
+        
+        
 
 class FareView(viewsets.ModelViewSet):
     queryset = Fare.objects.all()
     serializer_class = FareSerializer
 
 class ServiceView(viewsets.ModelViewSet):
-    permission_classes = (AllowAny,)
+    permission_classes = [IsOwner,IsAdminUser,IsAuthenticated]
     queryset = Service.objects.all()
     serializer_class = ServiceSerializer
     filter_backends = [DjangoFilterBackend]
@@ -394,6 +423,8 @@ class ServiceView(viewsets.ModelViewSet):
             new_service=service.save()
             dictService=request.data
             dictService['pk']=new_service.pk
+            client=Client.objects.get(pk=dictService["idClientService"])
+            dictService["uidClient"]=User.objects.get(pk=client.userClient.pk).uid
             print(dictService)
             notify(title="Atencion",body="Nuevo Servicio",user="0",data=dictService)
 

@@ -18,6 +18,7 @@ class Company(models.Model):
         return '%s: %s %s %s %s' % (self.idCompany, self.nameCompany, self.typeCompany, self.addressCompany, self.webpageCompany)
 
 class User(AbstractUser):
+    uid = models.CharField(max_length=150,unique=True)
     company = models.ForeignKey(Company, blank=True, null=True, on_delete=models.CASCADE)
     email = models.EmailField(blank=False,unique=True)
     cedula = models.CharField(unique=True, max_length=10, null=True)

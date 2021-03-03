@@ -15,8 +15,6 @@ admin.site.register(Client)
 admin.site.register(TypeService)
 admin.site.register(Fare)
 admin.site.register(Payment)
-admin.site.register(Location)
 admin.site.register(Service)
 admin.site.register(Details)
 
-admin.site.register(Police)
